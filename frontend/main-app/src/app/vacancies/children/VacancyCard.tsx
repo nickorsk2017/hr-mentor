@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { Vacancy, VacancyStage } from "../../mentor-context";
 import { Button } from "@/shared/ui/Button";
 import { CvRichEditor } from "@/shared/ui/CvRichEditor";
@@ -34,6 +34,7 @@ export function VacancyCard({
       titleRef.current?.focus();
     }
   }, [isActive, vacancy.title]);
+
 
   const stagesJSX = useMemo(() => {
     if(!isActive) return null;
@@ -80,16 +81,16 @@ export function VacancyCard({
                       <option value="done">Done (success)</option>
                       <option value="failed">Failed</option>
                     </select>
-                    <button
-                      type="button"
+                    <Button
+                      appearance="danger"
+                      size="small"
                       onClick={(e) => {
                         e.stopPropagation();
                         onRemoveStage(stage.id);
                       }}
-                      className="rounded-full border border-zinc-200 bg-white px-2 py-1 text-lg text-zinc-600 hover:bg-zinc-100"
                     >
                       Remove
-                    </button>
+                    </Button>
                   </>
                 ) : (
                   <span className="text-sm text-zinc-500">{stage.status}</span>
@@ -118,30 +119,36 @@ export function VacancyCard({
 
   return (
     <article
-      className="flex flex-col gap-3 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm"
+      className={`relative flex flex-col gap-3 rounded-2xl border p-4 shadow-sm cursor-pointer bg-white ${isActive ? "border-violet-500" : "border-zinc-200"}`}
       onClick={() => {
         if (!isActive) onActivate();
       }}
     >
       <header className="relative flex w-full items-start justify-between gap-2">
         <div className="flex w-full flex-col gap-1 text-lg">
+         
+          <div></div>
           {isActive ? (
             <>
-              <input
-                ref={titleRef}
-                className="w-full border-none bg-transparent text-[30px] font-semibold text-zinc-900 outline-none focus:ring-0"
-                value={vacancy.title}
-                onChange={(e) => onUpdateVacancy({ title: e.target.value })}
-                placeholder="Vacancy title"
-              />
-              <input
-                className="w-full border-none bg-transparent text-[20px] text-zinc-600 outline-none focus:ring-0"
-                value={vacancy.company ?? ""}
-                onChange={(e) => onUpdateVacancy({ company: e.target.value })}
-                placeholder="Company"
-              />
-              <div className="mt-2 w-full">
-                <CvRichEditor
+            <div className="sticky top-0 z-40 bg-white/90 backdrop-blur flex flex-col gap-2">
+                <input
+                    ref={titleRef}
+                    className="w-full max-w-[600px] border-none bg-transparent text-[20px] font-semibold outline-none focus:ring-0"
+                    value={vacancy.title}
+                    onChange={(e) => onUpdateVacancy({ title: e.target.value })}
+                    placeholder="Vacancy title"
+                  />
+                <input
+                  className="w-full max-w-[400px] border-none bg-transparent text-[20px] text-zinc-600 outline-none focus:ring-0"
+                  value={vacancy.company ?? ""}
+                  onChange={(e) => onUpdateVacancy({ company: e.target.value })}
+                  placeholder="Company"
+                />
+            </div>
+              
+               <CvRichEditor
+                  size="small"
+                  className="max-h-auto mt-2 w-full"
                   valueHtml={vacancy.description}
                   onChangeHtml={(next) =>
                     onUpdateVacancy({
@@ -150,11 +157,10 @@ export function VacancyCard({
                   }
                   autoFocus={Boolean(vacancy.title.trim())}
                 />
-              </div>
             </>
           ) : (
             <>
-              <div className="text-[30px] font-semibold text-zinc-900">
+              <div className="text-[20px] font-semibold text-zinc-900">
                 {vacancy.title || "Untitled vacancy"}
               </div>
               {vacancy.company && (
@@ -165,12 +171,13 @@ export function VacancyCard({
         </div>
         <Button
           type="button"
+          size="small"
           onClick={(e) => {
             e.stopPropagation();
             onDelete();
           }}
           appearance="danger"
-          className="absolute right-4 top-4"
+          className="absolute right-4 top-0 z-40"
         >
           Delete
         </Button>
@@ -178,22 +185,21 @@ export function VacancyCard({
 
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <span className="text-lg font-medium text-zinc-800">Stages</span>
+          <span></span>
           {typeof vacancy.plannedStageCount === "number" && (
             <span className="text-lg text-zinc-500">
               Planned: {vacancy.plannedStageCount} stages
             </span>
           )}
-          <button
-            type="button"
+          {isActive && <Button
+            size="small"
             onClick={(e) => {
               e.stopPropagation();
               onOpenStageCountModal();
             }}
-            className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-lg font-medium text-zinc-800 hover:bg-zinc-100"
           >
             Add stage
-          </button>
+          </Button>}
         </div>
         {stagesJSX}
       </div>

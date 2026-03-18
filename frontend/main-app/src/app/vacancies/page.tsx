@@ -104,17 +104,15 @@ export default function VacanciesPage() {
     <section className="flex w-full flex-col gap-6">
       <header className="flex flex-col gap-2">
         <h1 className="text-xl font-semibold text-zinc-950">Vacancies</h1>
-        <p className="max-w-2xl text-lg text-zinc-600">
+        <p className="max-w-2xl text-lg text-violet-500">
           Track roles you are targeting, manage interview stages, and capture
           notes about what went well or could improve.
         </p>
       </header>
 
-      <div className="flex justify-end">
-        <Button type="button" onClick={handleAddVacancy} appearance="primary">
+      <Button type="button"  onClick={handleAddVacancy} appearance="violet" className="self-end !sticky !top-2 z-450 mr-5">
           Add vacancy
-        </Button>
-      </div>
+      </Button>
 
       <div className="flex flex-col gap-3">
         {vacancies.length === 0 ? (

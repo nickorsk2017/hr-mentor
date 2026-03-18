@@ -4,17 +4,24 @@ import React, { useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Button } from "./Button";
+import type { Size } from "./Button";
 
 type CvRichEditorProps = {
   valueHtml: string;
   onChangeHtml: (nextHtml: string) => void;
   autoFocus?: boolean;
+  className?: string;
+  size?: Size;
+  classToolbar?: string;
 };
 
 export function CvRichEditor({
   valueHtml,
   onChangeHtml,
   autoFocus,
+  className,
+  size = "medium",
+  classToolbar,
 }: CvRichEditorProps) {
   const editor = useEditor({
     extensions: [StarterKit],
@@ -42,18 +49,25 @@ export function CvRichEditor({
   useEffect(() => {
     if (!editor) return;
     if (autoFocus) {
-      editor.commands.focus("end");
+      // Place caret at the very start of the document
+      editor.commands.setTextSelection(0);
+      editor.commands.focus("start");
     }
   }, [editor, autoFocus]);
 
   if (!editor) return null;
 
   return (
-    <div className="relative max-h-[70vh] overflow-auto rounded-2xl border border-zinc-200 bg-white">
+    <div
+      className={`cursor-text  height-auto border border-zinc-200 bg-white border-t-0 ${
+        className ?? ""
+      }`}
+    >
       {/* Toolbar sticks to the top of this scrollable editor card */}
-      <div className="sticky top-0 z-20 flex flex-wrap items-center gap-1 border-b border-zinc-100 bg-white/90 px-3 py-2 backdrop-blur">
+      <div className={`sticky top-17.5 z-40 flex flex-wrap items-center gap-1 border-t border-b border-zinc-200 bg-white/90 px-3 py-2 backdrop-blur ${classToolbar}`}>
         <Button
           type="button"
+          size={size}
           appearance={editor.isActive("bold") ? "primary" : "secondary"}
           disabled={!editor.can().chain().focus().toggleBold().run()}
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -62,6 +76,7 @@ export function CvRichEditor({
         </Button>
         <Button
           type="button"
+          size={size}
           appearance={editor.isActive("italic") ? "primary" : "secondary"}
           disabled={!editor.can().chain().focus().toggleItalic().run()}
           onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -70,6 +85,7 @@ export function CvRichEditor({
         </Button>
         <Button
           type="button"
+          size={size}
           appearance={editor.isActive("bulletList") ? "primary" : "secondary"}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
@@ -77,6 +93,7 @@ export function CvRichEditor({
         </Button>
         <Button
           type="button"
+          size={size}
           appearance={editor.isActive("orderedList") ? "primary" : "secondary"}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
@@ -84,6 +101,7 @@ export function CvRichEditor({
         </Button>
         <Button
           type="button"
+          size={size}
           appearance={
             editor.isActive("heading", { level: 2 }) ? "primary" : "secondary"
           }
@@ -93,6 +111,7 @@ export function CvRichEditor({
         </Button>
         <Button
           type="button"
+          size={size}
           appearance="secondary"
           onClick={() => editor.chain().focus().setParagraph().run()}
         >
@@ -100,6 +119,7 @@ export function CvRichEditor({
         </Button>
         <Button
           type="button"
+          size={size}
           appearance="ghost"
           disabled={!editor.can().chain().focus().undo().run()}
           onClick={() => editor.chain().focus().undo().run()}
@@ -108,6 +128,7 @@ export function CvRichEditor({
         </Button>
         <Button
           type="button"
+          size={size}
           appearance="ghost"
           disabled={!editor.can().chain().focus().redo().run()}
           onClick={() => editor.chain().focus().redo().run()}
