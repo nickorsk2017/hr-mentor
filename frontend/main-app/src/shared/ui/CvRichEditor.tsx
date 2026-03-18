@@ -1,0 +1,123 @@
+"use client";
+
+import React, { useEffect } from "react";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { Button } from "./Button";
+
+type CvRichEditorProps = {
+  valueHtml: string;
+  onChangeHtml: (nextHtml: string) => void;
+  autoFocus?: boolean;
+};
+
+export function CvRichEditor({
+  valueHtml,
+  onChangeHtml,
+  autoFocus,
+}: CvRichEditorProps) {
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: valueHtml || "<p></p>",
+    editorProps: {
+      attributes: {
+        class:
+          "min-h-[260px] p-3 text-lg leading-relaxed text-zinc-800 outline-none focus:ring-2 focus:ring-zinc-900/5",
+      },
+    },
+    immediatelyRender: false,
+    onUpdate: ({ editor }) => {
+      onChangeHtml(editor.getHTML());
+    },
+  });
+
+  useEffect(() => {
+    if (!editor) return;
+    const current = editor.getHTML();
+    if (current !== valueHtml) {
+      editor.commands.setContent(valueHtml || "<p></p>");
+    }
+  }, [editor, valueHtml]);
+
+  useEffect(() => {
+    if (!editor) return;
+    if (autoFocus) {
+      editor.commands.focus("end");
+    }
+  }, [editor, autoFocus]);
+
+  if (!editor) return null;
+
+  return (
+    <div className="relative max-h-[70vh] overflow-auto rounded-2xl border border-zinc-200 bg-white">
+      {/* Toolbar sticks to the top of this scrollable editor card */}
+      <div className="sticky top-0 z-20 flex flex-wrap items-center gap-1 border-b border-zinc-100 bg-white/90 px-3 py-2 backdrop-blur">
+        <Button
+          type="button"
+          appearance={editor.isActive("bold") ? "primary" : "secondary"}
+          disabled={!editor.can().chain().focus().toggleBold().run()}
+          onClick={() => editor.chain().focus().toggleBold().run()}
+        >
+          Bold
+        </Button>
+        <Button
+          type="button"
+          appearance={editor.isActive("italic") ? "primary" : "secondary"}
+          disabled={!editor.can().chain().focus().toggleItalic().run()}
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+        >
+          Italic
+        </Button>
+        <Button
+          type="button"
+          appearance={editor.isActive("bulletList") ? "primary" : "secondary"}
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+        >
+          Bullets
+        </Button>
+        <Button
+          type="button"
+          appearance={editor.isActive("orderedList") ? "primary" : "secondary"}
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        >
+          Numbered
+        </Button>
+        <Button
+          type="button"
+          appearance={
+            editor.isActive("heading", { level: 2 }) ? "primary" : "secondary"
+          }
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+        >
+          H2
+        </Button>
+        <Button
+          type="button"
+          appearance="secondary"
+          onClick={() => editor.chain().focus().setParagraph().run()}
+        >
+          P
+        </Button>
+        <Button
+          type="button"
+          appearance="ghost"
+          disabled={!editor.can().chain().focus().undo().run()}
+          onClick={() => editor.chain().focus().undo().run()}
+        >
+          Undo
+        </Button>
+        <Button
+          type="button"
+          appearance="ghost"
+          disabled={!editor.can().chain().focus().redo().run()}
+          onClick={() => editor.chain().focus().redo().run()}
+        >
+          Redo
+        </Button>
+      </div>
+
+      <EditorContent editor={editor} />
+    </div>
+  );
+}
+
