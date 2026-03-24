@@ -25,17 +25,20 @@ def _build_embeddings_client() -> OpenAIEmbeddings:
     kwargs: dict[str, Any] = {
         "model": settings.openai_embedding_model,
         "api_key": settings.openai_api_key,
-        "chunk_size": 1200,
     }
     
     if settings.openai_embedding_dimensions is not None:
-        kwargs["dimensions"] = settings.openai_embedding_dimensions
+        kwargs["dimensions"] = int(settings.openai_embedding_dimensions)
 
+    print("KWARGS:")
+    print(kwargs)
     return OpenAIEmbeddings(**kwargs)
 
 
 def _embed_sync(text: str) -> list[float]:
     emb = _build_embeddings_client()
+    print("TEXT FOR EMBEDDING:")
+    print(text)
     return emb.embed_query(text)
 
 
@@ -117,6 +120,9 @@ async def index_vacancy_ai(req: AiIndexRequest) -> AiIndexResponse:
     short = (extracted.short_description or "").strip()
 
     values = await asyncio.to_thread(_embed_sync, short)
+
+    print("EMBEDDINGS:")
+    print(values)
     metadata = _metadata_for_vector(
         req.vacancy_id,
         req.title,
@@ -124,6 +130,7 @@ async def index_vacancy_ai(req: AiIndexRequest) -> AiIndexResponse:
         short,
         extracted,
     )
+
     await asyncio.to_thread(
         _upsert_sync,
         [{"id": req.vacancy_id, "values": values, "metadata": metadata}],

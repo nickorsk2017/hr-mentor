@@ -204,11 +204,11 @@ export function VacancyCard({
     >
       <div className="sticky top-0 h-[28px] w-full bg-white backdrop-blu z-50"></div>
       <div className={cx("flex flex-col relative")}>
-        <header className={cx("top-4 z-40 bg-white/70 backdrop-blur z-50 rounded-2xl !border-b-0 !rounded-b-none border border-gray-300", isActive ? "border-violet-500 sticky" : "static border-gray-300")}>
+        <header className={cx("top-4 z-40 bg-white/70 backdrop-blur z-50 rounded-2xl !border-b-0 !rounded-b-none border border-gray-300 shadow-[0_1px_1px_rgba(17,24,39,0.02),0_6px_18px_rgba(17,24,39,0.06)] transition-shadow duration-200", isActive ? "border-violet-500 sticky shadow-[0_2px_2px_rgba(17,24,39,0.03),0_10px_26px_rgba(17,24,39,0.10)]" : "static border-gray-300 hover:shadow-[0_2px_2px_rgba(17,24,39,0.03),0_10px_24px_rgba(17,24,39,0.08)]")}>
         <div onMouseDown={() => {if(!isActive) onToggle()}} className={cx("flex flex-col gap-2  p-4 bg-transparent", isActive ? "border-violet-500" : "border-gray-300")}>
             <input
               ref={titleRef}
-              className="w-full max-w-[600px] border-none bg-transparent text-[20px] font-semibold outline-none focus:ring-0"
+              className="w-full max-w-[760px] border-none bg-transparent text-[20px] font-semibold leading-tight tracking-[-0.01em] text-zinc-900 outline-none focus:ring-0 placeholder:text-zinc-400"
               value={vacancy.title}
               onMouseUp={(e) => e.stopPropagation()}
               onChange={(e) => {
@@ -219,7 +219,7 @@ export function VacancyCard({
             />
             <input
               onMouseUp={(e) => e.stopPropagation()}
-              className="w-full max-w-[400px] border-none bg-transparent text-[20px] text-zinc-600 outline-none focus:ring-0"
+              className="w-full max-w-[620px] border-none bg-transparent text-[18px] font-medium leading-tight text-zinc-500 outline-none focus:ring-0 placeholder:text-zinc-400"
               value={vacancy.company ?? ""}
               onChange={(e) => onUpdateVacancy({ company: e.target.value })}
               placeholder="Company"
@@ -230,7 +230,7 @@ export function VacancyCard({
           </div>      
         </header>
 
-        <div className={cx(" flex flex-col gap-2 p-4 pt-0 border !border-t-0 !border-b-0", isActive ? "border-violet-500 " : "static border-gray-300")}>
+        <div className={cx("flex flex-col gap-2 p-4 pt-0 border !border-t-0 !border-b-0 bg-white shadow-[0_6px_18px_rgba(17,24,39,0.06)]", isActive ? "border-violet-500 " : "static border-gray-300")}>
           {isActive && <CvRichEditor
             size="small"
             ref={descriptionRef}
@@ -266,7 +266,7 @@ export function VacancyCard({
         </div> 
       </div>
       
-      <div className={cx("flex flex-col gap-2 sticky top-0 z-60 border !border-t-0 rounded-2xl !rounded-t-none h-4", isActive ? "border-violet-500" : "border-gray-300")}>
+      <div className={cx("flex flex-col gap-2 sticky top-0 z-60 border !border-t-0 rounded-2xl !rounded-t-none h-4 shadow-[0_8px_20px_rgba(17,24,39,0.07)]", isActive ? "border-violet-500" : "border-gray-300")}>
           
       </div>
     </article>

@@ -17,16 +17,12 @@ class Settings(BaseSettings):
     openai_chat_model: str = "gpt-4o-mini"
     openai_embedding_model: str = "text-embedding-3-small"
     # Optional down-projection for text-embedding-3* models (e.g. 1024 for a 1024-d index)
-    openai_embedding_dimensions: int | None = None
+    openai_embedding_dimensions: int = 1536
 
     # Pinecone
     pinecone_api_key: str = ""
     pinecone_index_name: str = ""
     pinecone_namespace: str = "vacancies"
-
-    # Llama via Ollama (LangChain ChatOllama)
-    ollama_base_url: str = "http://localhost:11434"
-    ollama_model: str = "llama3.1"
 
 
 settings = Settings()

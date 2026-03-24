@@ -15,7 +15,16 @@ class ExtractedJobDescription(BaseModel):
     is_part_time: bool = False
     is_contract: bool = False
     location: str = ""
+    salary_range: str = ""
+    benefits: list[str] = Field(default_factory=list)
+    field: str = ""
+    company_size: str = ""
+    company_type: str = ""
+    company_industry: str = ""
+    company_location: str = ""
+    company_website: str = ""
     short_description: str = Field(
         default="",
-        description="Job narrative only; no duplicated structured fields",
+        description="""SHORT_DESCRIPTION MUST DESCRIBE ABOUT COMPANY, TEAM, RESPONSIBILITIES, BENEFITS, APPROACHES, WHAT IS IMPORTANT.
+SHORT_DESCRIPTION SHOULD BE 5-15 SENTENCES.""",
     )
