@@ -200,9 +200,9 @@ export function VacancyCard({
 
   return (
     <article
-      className={`relative flex flex-col cursor-pointer bg-white w-full`}
+      className={cx(`relative flex flex-col cursor-pointer bg-white w-full`, !isActive && "mt-[20px]")}
     >
-      <div className="sticky top-[65px] h-[28px] w-full bg-white backdrop-blu z-50"></div>
+      {isActive && <div className="sticky top-[72px] h-[20px] w-full bg-white z-50"></div>}
       <div className={cx("flex flex-col relative bg-white")}>
         <header className={cx("top-20 z-40 bg-white/70 backdrop-blur z-50 rounded-2xl !border-b-0 !rounded-b-none border border-gray-300 duration-200", isActive ? "border-violet-500 sticky " : "static border-gray-300")}>
         <div onMouseDown={() => {if(!isActive) onToggle()}} className={cx("flex flex-col gap-2  p-4 bg-transparent", isActive ? "border-violet-500" : "border-gray-300")}>

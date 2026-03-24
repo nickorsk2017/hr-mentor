@@ -109,7 +109,7 @@ export default function MyCvPage() {
       <div className="flex flex-col w-fulljustify-center items-center">
         <div className="w-full  max-w-6xl ">
 
-          <CvRichEditor valueHtml={draftHtml} onChangeHtml={handleChangeHtml} classToolbar="!top-11" />
+          <CvRichEditor valueHtml={draftHtml} onChangeHtml={handleChangeHtml} classToolbar="!top-[64px]" />
           <p className="text-[11px] text-zinc-500">
             Tip: Include key skills, technologies, and achievements. The ranking
             engine uses this text to compare with vacancies.

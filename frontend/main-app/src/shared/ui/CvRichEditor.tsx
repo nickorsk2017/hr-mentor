@@ -79,12 +79,12 @@ export const CvRichEditor = React.forwardRef<CvRichEditorHandle, CvRichEditorPro
   return (
     <div
       onClick={onMouseUp}
-      className={`cursor-text  height-auto border border-zinc-200 bg-white border-t-0 ${
+      className={`cursor-text  height-auto border border-zinc-200 bg-white border-t-0 rounded-2xl ${
         className ?? ""
       }`}
     >
       {/* Toolbar sticks to the top of this scrollable editor card */}
-      <div className={`sticky top-17.5 z-40 flex flex-wrap items-center gap-1 border-t border-b border-zinc-200 bg-white/90 px-3 py-2 backdrop-blur ${classToolbar}`}>
+      <div className={`sticky top-20.5 z-50 flex flex-wrap items-center gap-1 border-t border-b border-zinc-200 bg-white/90 px-3 py-2 backdrop-blur rounded-t-2xl ${classToolbar}`}>
         <Button
           type="button"
           size={size}

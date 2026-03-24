@@ -10,7 +10,7 @@ type HeaderProps = {
 
 export function Header({ title, actionLabel, onActionClick }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-60 mb-4 flex items-center justify-between border-b border-[#e4e3ee] bg-white/80 px-6 py-4 backdrop-blur">
+    <header className="sticky top-0 z-60 mb-4 flex items-center justify-between bg-white/80 px-6 py-4 backdrop-blur">
       <h1 className="flex items-center gap-2 text-2xl font-semibold">{title}</h1>
 
       {actionLabel && onActionClick ? (
