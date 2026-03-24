@@ -23,7 +23,7 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 | Variable | Default | Purpose |
 |----------|---------|---------|
 | `NEXT_PUBLIC_CV_MICROSERVICE_URL` | `http://localhost:8000` | CV + vacancies API |
-| `NEXT_PUBLIC_AI_MATCHING_MICROSERVICE_URL` | `http://localhost:8001` | Vacancy vector index (`POST /v1/vacancies/index`) after add |
+| `NEXT_PUBLIC_AI_MATCHING_MICROSERVICE_URL` | `http://localhost:8001` | Vacancy AI index (`POST /ai/index`) after add/update |
 
 New vacancies call the matching service after a successful create; if indexing fails, the vacancy still appears (warning logged to the console).
 

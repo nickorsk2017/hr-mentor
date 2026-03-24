@@ -117,7 +117,11 @@ export function VacanciesPage() {
         if (!vacancy) return;
         setSavingVacancyId(vacancyId);
 
-        const data = {...vacancy, ...patch, stages: patch.stages ?? []};
+        const data = {
+          ...vacancy,
+          ...patch,
+          stages: patch.stages ?? vacancy.stages ?? [],
+        };
 
         try {
           const mapped = await updateVacancyOnBackend(vacancyId, data);
@@ -131,6 +135,12 @@ export function VacanciesPage() {
           });
 
           updateVacancyStages(mapped.id, mapped.stages ?? []);
+
+          try {
+            await indexVacancyForMatching(mapped);
+          } catch (indexErr) {
+            console.warn("[vacancies] Pinecone re-index skipped:", indexErr);
+          }
         } catch (e) {
           console.error(e);
           window.alert("Could not save vacancy. Check the API is running.");

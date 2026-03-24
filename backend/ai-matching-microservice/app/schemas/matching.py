@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 
-class IndexVacancyRequest(BaseModel):
-    """Payload to embed and upsert a vacancy into Pinecone."""
+class AiIndexRequest(BaseModel):
+    """Vacancy payload: description is embedded after LLM extraction."""
 
     vacancy_id: str = Field(..., min_length=1, description="Stable id, e.g. vacancy UUID")
     title: str = Field("", max_length=512)
@@ -12,18 +14,19 @@ class IndexVacancyRequest(BaseModel):
     description: str = Field(
         ...,
         min_length=1,
-        description="Job description (plain text or HTML; HTML tags are stripped for embedding)",
+        description="Job description (plain text or HTML)",
     )
 
 
-class IndexVacancyResponse(BaseModel):
+class AiIndexResponse(BaseModel):
     vacancy_id: str
     dimensions: int
     namespace: str
-    llama_summary: str = Field(
+    text: str = Field(
         ...,
-        description="Short note from the Llama model (Ollama) about the indexed role",
+        description="Stored in Pinecone metadata `text` (LLM short_description).",
     )
+    extracted: dict[str, Any]
 
 
 class DeleteVacancyIndexResponse(BaseModel):
@@ -37,5 +40,3 @@ class HealthResponse(BaseModel):
     service: str
     openai_configured: bool
     pinecone_configured: bool
-    ollama_base_url: str
-    ollama_model: str

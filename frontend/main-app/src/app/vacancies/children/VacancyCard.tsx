@@ -30,12 +30,18 @@ export function VacancyCard({
   onRemoveStage,
 }: VacancyCardProps) {
   const titleRef = useRef<HTMLInputElement | null>(null);
+  const companyRef = useRef<HTMLInputElement | null>(null);
+  const descriptionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!isActive) return;
-    if (!vacancy.title.trim()) {
+
+    const title = vacancy.title.trim();
+
+    if (!title) {
       titleRef.current?.focus();
     }
+
   }, [isActive, vacancy.title]);
 
   const stagesJSX = useMemo(() => {
@@ -199,7 +205,7 @@ export function VacancyCard({
       <div className="sticky top-0 h-[28px] w-full bg-white backdrop-blu z-50"></div>
       <div className={cx("flex flex-col relative")}>
         <header className={cx("top-4 z-40 bg-white/70 backdrop-blur z-50 rounded-2xl !border-b-0 !rounded-b-none border border-gray-300", isActive ? "border-violet-500 sticky" : "static border-gray-300")}>
-        <div onMouseDown={() => onToggle()} className={cx("flex flex-col gap-2  p-4 bg-transparent", isActive ? "border-violet-500" : "border-gray-300")}>
+        <div onMouseDown={() => {if(!isActive) onToggle()}} className={cx("flex flex-col gap-2  p-4 bg-transparent", isActive ? "border-violet-500" : "border-gray-300")}>
             <input
               ref={titleRef}
               className="w-full max-w-[600px] border-none bg-transparent text-[20px] font-semibold outline-none focus:ring-0"
@@ -227,6 +233,7 @@ export function VacancyCard({
         <div className={cx(" flex flex-col gap-2 p-4 pt-0 border !border-t-0 !border-b-0", isActive ? "border-violet-500 " : "static border-gray-300")}>
           {isActive && <CvRichEditor
             size="small"
+            ref={descriptionRef}
             onMouseUp={(e) => e.stopPropagation()}
             className="max-h-auto mt-2 w-full"
             classToolbar="!top-[114px]"

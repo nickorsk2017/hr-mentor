@@ -19,7 +19,6 @@ dependencies = [
   "pydantic-settings==2.6.1",
   "langchain-core>=0.3",
   "langchain-openai>=0.2",
-  "langchain-community>=0.3",
   "pinecone[grpc]>=5.0,<6",
 ]
 

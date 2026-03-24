@@ -7,7 +7,7 @@ export const MATCHING_API_BASE =
   DEFAULT_MATCHING_BASE;
 
 /**
- * POST /v1/vacancies/index — embed + Pinecone upsert (ai-matching-microservice).
+ * POST /ai/index — LLM extraction + embed short_description + Pinecone upsert.
  * Safe to call with minimal text; uses fallbacks so the API min_length=1 is satisfied.
  */
 export async function indexVacancyForMatching(vacancy: Vacancy): Promise<void> {
@@ -19,7 +19,7 @@ export async function indexVacancyForMatching(vacancy: Vacancy): Promise<void> {
     [title, company].filter(Boolean).join(" — ") ||
     "No description yet.";
 
-  const res = await fetch(`${MATCHING_API_BASE}/v1/vacancies/index`, {
+  const res = await fetch(`${MATCHING_API_BASE}/ai/index`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -42,7 +42,7 @@ export async function deleteVacancyFromMatchingIndex(
   vacancyId: string
 ): Promise<void> {
   const res = await fetch(
-    `${MATCHING_API_BASE}/v1/vacancies/index/${encodeURIComponent(vacancyId)}`,
+    `${MATCHING_API_BASE}/ai/index/${encodeURIComponent(vacancyId)}`,
     {
       method: "DELETE",
     }

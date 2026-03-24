@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useImperativeHandle } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Button } from "./Button";
@@ -16,7 +16,11 @@ type CvRichEditorProps = {
   onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 
-export function CvRichEditor({
+export type CvRichEditorHandle = {
+  focus: () => void;
+};
+
+export const CvRichEditor = React.forwardRef<CvRichEditorHandle, CvRichEditorProps>(function CvRichEditor({
   valueHtml,
   onChangeHtml,
   autoFocus,
@@ -24,7 +28,7 @@ export function CvRichEditor({
   size = "medium",
   classToolbar,
   onMouseUp,
-}: CvRichEditorProps) {
+}, ref) {
   const editor = useEditor({
     extensions: [StarterKit],
     content: valueHtml || "<p></p>",
@@ -56,6 +60,19 @@ export function CvRichEditor({
       editor.commands.focus("start");
     }
   }, [editor, autoFocus]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      focus: () => {
+        if (!editor) return;
+        
+        editor.commands.setTextSelection(0);
+        editor.commands.focus("start");
+      },
+    }),
+    [editor]
+  );
 
   if (!editor) return null;
 
@@ -143,5 +160,5 @@ export function CvRichEditor({
       <EditorContent editor={editor} />
     </div>
   );
-}
+});
 
