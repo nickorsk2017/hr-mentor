@@ -1,18 +1,8 @@
 "use client";
+import { useMemo } from "react";
 
-import React, { useMemo } from "react";
-import type { Vacancy } from "../../mentor-context";
-
-export type RankedVacancy = Vacancy & {
-  fitScore: number;
-  completedStages: number;
-  totalStages: number;
-  failedStages: number;
-  recommendations: string[];
-};
-
-type VacancyMatchingCardProps = {
-  vacancy: RankedVacancy;
+type ComponentProps = {
+  vacancy: Entity.Vacancy;
   index: number;
   isActive: boolean;
   onActivate: () => void;
@@ -23,7 +13,8 @@ export function VacancyMatchingCard({
   index,
   isActive,
   onActivate,
-}: VacancyMatchingCardProps) {
+}: ComponentProps) {
+  console.log("vacancy", vacancy);
 
   const headerJSX = useMemo(() => {
     return (
@@ -45,17 +36,26 @@ export function VacancyMatchingCard({
           <div className="h-1.5 w-24 overflow-hidden rounded-full bg-zinc-100">
             <div
               className="h-full rounded-full bg-emerald-500"
-              style={{ width: `${vacancy.fitScore}%` }}
+              style={{ width: `${vacancy.match_score}%` }}
             />
           </div>
           <span className="text-lg font-semibold text-zinc-900">
-            {vacancy.fitScore}%
+            {vacancy.match_score}%
           </span>
         </div>
       </div>
     </header>
     );
   }, [index]);
+
+  const reasoningJSX = useMemo(() => {
+    return (
+      <div className="flex flex-col gap-1 rounded-lg bg-zinc-50 p-2">
+        <span className="font-medium text-zinc-700">Reasoning</span>
+        <span className="text-zinc-600" dangerouslySetInnerHTML={{ __html: vacancy.reason ?? "" }} />
+      </div>
+    );
+  }, [vacancy.reason]);
 
   return (
     <article
@@ -65,6 +65,7 @@ export function VacancyMatchingCard({
       onClick={onActivate}
     >
       {headerJSX}
+      {reasoningJSX}
 
       {isActive && vacancy.description && (
         <div
@@ -77,15 +78,12 @@ export function VacancyMatchingCard({
         <div className="flex flex-col gap-1 rounded-lg bg-zinc-50 p-2">
           <span className="font-medium text-zinc-700">Interview progress</span>
           <span className="text-zinc-600">
-            {vacancy.completedStages} / {vacancy.totalStages} stages completed
+            1 / 3 stages completed
           </span>
-          {vacancy.failedStages > 0 && (
-            <span className="text-red-600">
-              {vacancy.failedStages} failed stage
-              {vacancy.failedStages > 1 ? "s" : ""}
-            </span>
-          )}
-          {vacancy.totalStages === 0 && (
+          <span className="text-red-600">
+            1 failed stage
+          </span>
+          {vacancy.planned_stages === 0 && (
             <span className="text-zinc-500">No stages tracked yet.</span>
           )}
         </div>
@@ -98,22 +96,30 @@ export function VacancyMatchingCard({
           </span>
         </div>
 
+        <div className="flex flex-col gap-1 rounded-lg bg-violet-50 p-2">
+          <span className="font-medium text-violet-800">AI scoring details</span>
+          <span className="text-violet-700">
+            Tech: {vacancy.tech_score ?? "—"} | Years: {vacancy.years_score ?? "—"}
+          </span>
+          <span className="text-violet-700">
+            Domain: {vacancy.domain_score ?? "—"} | Other: {vacancy.other_score ?? "—"}
+          </span>
+          {(vacancy.aligned_skills || []).length > 0 && (
+            <span className="text-violet-700">
+              Aligned skills: {vacancy.aligned_skills?.join(", ")}
+            </span>
+          )}
+          {(vacancy.not_aligned_skills || []).length > 0 && (
+            <span className="text-violet-700">
+              Not aligned skills: {vacancy.not_aligned_skills?.join(", ")}
+            </span>
+          )}
+        </div>
+
         <div className="flex flex-col gap-1 rounded-lg bg-emerald-50 p-2">
           <span className="font-medium text-emerald-800">
             AI-style recommendations
           </span>
-          {vacancy.recommendations.length === 0 ? (
-            <span className="text-emerald-700">
-              Keep going – this role looks like a reasonable fit based on current
-              signals.
-            </span>
-          ) : (
-            <ul className="ml-4 list-disc space-y-1 text-emerald-800">
-              {vacancy.recommendations.map((rec, i) => (
-                <li key={i}>{rec}</li>
-              ))}
-            </ul>
-          )}
         </div>
       </div>
     </article>

@@ -9,13 +9,12 @@ from pinecone import Pinecone
 
 from ..config import settings
 from ..schemas.matching import (
-    AiIndexRequest,
-    AiIndexResponse,
+    VacancyIndexRequest,
+    VacancyIndexResponse,
     DeleteVacancyIndexResponse,
 )
-from ..schemas.job_extraction import ExtractedJobDescription
-from .job_extraction_service import extract_job_description
-from .text_utils import strip_html_to_text
+from app.schemas.job_extraction import ExtractedJobDescription
+from app.services.job_extraction_service import extract_job_description
 
 
 def _build_embeddings_client() -> OpenAIEmbeddings:
@@ -29,55 +28,15 @@ def _build_embeddings_client() -> OpenAIEmbeddings:
     
     if settings.openai_embedding_dimensions is not None:
         kwargs["dimensions"] = int(settings.openai_embedding_dimensions)
-
-    print("KWARGS:")
-    print(kwargs)
     return OpenAIEmbeddings(**kwargs)
 
 
 def _embed_sync(text: str) -> list[float]:
     emb = _build_embeddings_client()
-    print("TEXT FOR EMBEDDING:")
-    print(text)
     return emb.embed_query(text)
 
 
-def _metadata_for_vector(
-    vacancy_id: str,
-    input_title: str,
-    company: str | None,
-    short_description: str,
-    extracted: ExtractedJobDescription,
-) -> dict[str, Any]:
-    """Pinecone metadata: `text` = short_description; full extraction as JSON string."""
-    extracted_dump = extracted.model_dump(mode="json")
-    skills = extracted_dump.get("skills") or []
-    categories = extracted_dump.get("categories") or []
-    if not isinstance(skills, list):
-        skills = []
-    if not isinstance(categories, list):
-        categories = []
-    skills_str = [str(s)[:256] for s in skills[:50]]
-    categories_str = [str(c)[:128] for c in categories[:20]]
-
-
-    meta: dict[str, Any] = {
-        "kind": "vacancy",
-        "vacancy_id": vacancy_id,
-        "input_title": (input_title or "")[:512],
-        "text": (short_description or "")[:8000],
-        "extracted_json": json.dumps(extracted_dump, ensure_ascii=False)[:39000],
-        **extracted_dump,
-        "skills": skills_str,
-        "categories": categories_str,
-    }
-    
-    if company:
-        meta["company"] = company[:512]
-    return meta
-
-
-def _upsert_sync(vectors: list[dict[str, Any]]) -> None:
+def _upsert_to_vector_db(vectors: list[dict[str, Any]]) -> None:
     if not settings.pinecone_api_key or not settings.pinecone_index_name:
         raise RuntimeError("PINECONE_API_KEY and PINECONE_INDEX_NAME must be set")
     pc = Pinecone(api_key=settings.pinecone_api_key)
@@ -88,7 +47,7 @@ def _upsert_sync(vectors: list[dict[str, Any]]) -> None:
             vectors=vectors,
             namespace=settings.pinecone_namespace,
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         msg = str(exc)
         if "does not match the dimension of the index" in msg:
             raise RuntimeError(
@@ -110,37 +69,36 @@ def _delete_sync(vacancy_id: str) -> None:
     )
 
 
-async def index_vacancy_ai(req: AiIndexRequest) -> AiIndexResponse:
+async def add_to_index(req: VacancyIndexRequest) -> VacancyIndexResponse:
     extracted = await extract_job_description(
         req.title,
         req.company,
         req.description,
     )
     extracted_dump = extracted.model_dump(mode="json")
-    short = (extracted.short_description or "").strip()
+    summary = (extracted.summary or "").strip()
 
-    values = await asyncio.to_thread(_embed_sync, short)
+    values = await asyncio.to_thread(_embed_sync, summary)
 
-    print("EMBEDDINGS:")
-    print(values)
-    metadata = _metadata_for_vector(
-        req.vacancy_id,
-        req.title,
-        req.company,
-        short,
-        extracted,
-    )
+    metadata = {
+        "kind": "vacancy",
+        "user_id": req.user_id,
+        "vacancy_id": req.vacancy_id,
+        "company": req.company,
+        "summary": summary,
+        **extracted.model_dump(mode="json")
+    }
 
     await asyncio.to_thread(
-        _upsert_sync,
+        _upsert_to_vector_db,
         [{"id": req.vacancy_id, "values": values, "metadata": metadata}],
     )
 
-    return AiIndexResponse(
+    return VacancyIndexResponse(
         vacancy_id=req.vacancy_id,
         dimensions=len(values),
         namespace=settings.pinecone_namespace,
-        text=short,
+        summary=summary,
         extracted=extracted_dump,
     )
 

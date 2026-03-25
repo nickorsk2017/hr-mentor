@@ -4,30 +4,11 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from "react";
 import { getVacanciesOnBackend } from "../shared/api/vacancyApi";
 
-type StageStatus = "pending" | "done" | "failed";
-
-export type VacancyStage = {
-  id: string;
-  name: string;
-  status: StageStatus;
-  notes: string;
-};
-
-export type Vacancy = {
-  id: string;
-  title: string;
-  company?: string;
-  description: string;
-  stages?: VacancyStage[];
-  planned_stages: number;
-  created_at?: string;
-};
 
 export type CV = {
   contentHtml: string;
@@ -36,16 +17,16 @@ export type CV = {
 
 type MentorState = {
   cv: CV | null;
-  vacancies: Vacancy[];
+  vacancies: Entity.Vacancy[];
 };
 
 type MentorContextValue = MentorState & {
   setCv: (cv: CV) => void;
   /** Append a vacancy (e.g. from POST /vacancies). `stages` default to []. */
-  addVacancy: (vacancy: Omit<Vacancy, "stages"> & { stages?: VacancyStage[] }) => void;
+  addVacancy: (vacancy: Entity.Vacancy) => void;
   deleteVacancy: (id: string) => void;
-  updateVacancy: (id: string, patch: Partial<Omit<Vacancy, "id" | "stages">>) => void;
-  updateVacancyStages: (id: string, stages: VacancyStage[]) => void;
+  updateVacancy: (id: string, patch: Partial<Entity.Vacancy>) => void;
+  updateVacancyStages: (id: string, stages: Entity.VacancyStage[]) => void;
   setVacancyPlannedStageCount: (id: string, count: number) => void;
   fetchVacancies: () => Promise<void>;
 };
@@ -61,22 +42,18 @@ export function MentorProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const addVacancy = useCallback(
-    (vacancy: Omit<Vacancy, "stages"> & { stages?: VacancyStage[] }) => {
-      const newVacancy: Vacancy = {
-        ...vacancy,
-        stages: vacancy.stages ?? [],
-      };
+    (vacancy: Entity.Vacancy) => {
       setState((prev) => ({
         ...prev,
-        vacancies: [...prev.vacancies, newVacancy],
+        vacancies: [...prev.vacancies, vacancy],
       }));
     },
     []
   );
 
   const fetchVacancies = useCallback(async () => {
-    const vacancies = await getVacanciesOnBackend();
-    setState((prev) => ({ ...prev, vacancies}));
+    const data = await getVacanciesOnBackend();
+    setState((prev) => ({ ...prev, vacancies: data.vacancies}));
   }, []);
 
   const deleteVacancy = useCallback((id: string) => {
@@ -87,7 +64,7 @@ export function MentorProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const updateVacancy = useCallback(
-    (id: string, patch: Partial<Omit<Vacancy, "id" | "stages">>) => {
+    (id: string, patch: Partial<Entity.Vacancy>) => {
       setState((prev) => ({
         ...prev,
         vacancies: prev.vacancies.map((v) =>
@@ -99,7 +76,7 @@ export function MentorProvider({ children }: { children: React.ReactNode }) {
   );
 
   const updateVacancyStages = useCallback(
-    (id: string, stages: VacancyStage[]) => {
+    (id: string, stages: Entity.VacancyStage[]) => {
       setState((prev) => ({
         ...prev,
         vacancies: prev.vacancies.map((v) =>

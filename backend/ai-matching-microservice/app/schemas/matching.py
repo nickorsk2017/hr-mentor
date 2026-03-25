@@ -5,9 +5,10 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 
-class AiIndexRequest(BaseModel):
+class VacancyIndexRequest(BaseModel):
     """Vacancy payload: description is embedded after LLM extraction."""
 
+    user_id: str = Field(..., min_length=1, description="Client user id (same as CV microservice)")
     vacancy_id: str = Field(..., min_length=1, description="Stable id, e.g. vacancy UUID")
     title: str = Field("", max_length=512)
     company: str | None = Field(None, max_length=512)
@@ -18,11 +19,11 @@ class AiIndexRequest(BaseModel):
     )
 
 
-class AiIndexResponse(BaseModel):
+class VacancyIndexResponse(BaseModel):
     vacancy_id: str
     dimensions: int
     namespace: str
-    text: str = Field(
+    summary: str = Field(
         ...,
         description="Stored in Pinecone metadata `text` (LLM short_description).",
     )

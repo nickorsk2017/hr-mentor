@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useMentor, Vacancy, VacancyStage } from "../../mentor-context";
-import { Modal } from "../../../shared/ui/Modal";
+import { useEffect, useRef, useState } from "react";
+import { useMentor } from "@/app/mentor-context";
+import { Modal } from "@/shared/ui/Modal";
+import { Container } from "@/shared/layout/Container";
 import { Header } from "@/shared/layout/Header";
 import { VacancyCard } from "./VacancyCard";
 import {
@@ -70,7 +71,7 @@ export function VacanciesPage() {
 
 
   const addStage = (vacancyId: string) => {
-    const newStage: VacancyStage = {
+    const newStage: Entity.VacancyStage = {
       id: crypto.randomUUID(),
       name: "",
       status: "pending",
@@ -84,7 +85,7 @@ export function VacanciesPage() {
   const updateStage = (
     vacancyId: string,
     stageId: string,
-    patch: Partial<VacancyStage>
+    patch: Partial<Entity.VacancyStage>
   ) => {
     const vacancy = vacancies.find((v) => v.id === vacancyId);
     if (!vacancy) return;
@@ -120,7 +121,7 @@ export function VacanciesPage() {
     setStageCountInput("");
   };
 
-  const handleSaveVacancy = async (vacancyId: string, patch: Partial<Vacancy>) => {
+  const handleSaveVacancy = async (vacancyId: string, patch: Partial<Entity.Vacancy>) => {
     if (timerSaveRef.current) {
       clearTimeout(timerSaveRef.current);
     }
@@ -163,7 +164,7 @@ export function VacanciesPage() {
     }, 3000);
   };
 
-  const onUpdateVacancyHandler = (vacancyId: string, patch: Partial<Vacancy>) => {
+  const onUpdateVacancyHandler = (vacancyId: string, patch: Partial<Entity.Vacancy>) => {
     updateVacancy(vacancyId, patch);
     handleSaveVacancy(vacancyId, patch);
   };
@@ -186,15 +187,14 @@ export function VacanciesPage() {
   };
 
   return (
-      <section className="flex w-full flex-col gap-4">
+      <section className="flex w-full flex-col">
         <Header
           title="Vacancies"
           actionLabel="Add Vacancy"
           onActionClick={handleAddVacancy}
         />
 
-        <div className="flex flex-col w-full items-center justify-center">
-          <div className="w-full max-w-6xl">
+        <Container className="gap-4">
             {vacancies.length === 0 ? (
               <p className="text-lg text-zinc-500">
                 No vacancies added yet. Start by adding a role above.
@@ -217,8 +217,7 @@ export function VacanciesPage() {
               ))
             )}
             <div ref={listEndRef} />
-          </div>
-        </div>
+        </Container>
 
         <Modal
           open={stageCountModalVacancyId !== null}

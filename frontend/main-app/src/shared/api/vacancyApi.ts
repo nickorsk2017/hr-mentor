@@ -1,48 +1,10 @@
 import { API_BASE, getOrCreateUserId } from "./cvApi";
-import type { Vacancy, VacancyStage } from "../../app/mentor-context";
-
-export type VacancyApiRecord = {
-  id: string;
-  user_id: string;
-  title: string;
-  company: string | null;
-  description: string;
-  planned_stages: number;
-  created_at: string;
-  stages?: Array<{
-    id: string;
-    name: string;
-    status: string;
-    notes: string;
-  }>;
-};
-
-function isStageStatus(s: string): s is VacancyStage["status"] {
-  return s === "pending" || s === "done" || s === "failed";
-}
-
-export function mapVacancyFromApi(data: VacancyApiRecord): Vacancy {
-  return {
-    id: data.id,
-    title: data.title,
-    company: data.company ?? undefined,
-    description: data.description,
-    planned_stages: data.planned_stages,
-    created_at: data.created_at,
-    stages: (data.stages ?? []).map((s) => ({
-      id: s.id,
-      name: s.name,
-      status: isStageStatus(s.status) ? s.status : "pending",
-      notes: s.notes ?? "",
-    })),
-  };
-}
 
 export async function createVacancyOnBackend(payload: {
   title: string;
   company?: string;
   description?: string;
-}): Promise<Vacancy> {
+}): Promise<Entity.Vacancy> {
   const userId = getOrCreateUserId();
 
   const res = await fetch(`${API_BASE}/vacancies`, {
@@ -62,11 +24,11 @@ export async function createVacancyOnBackend(payload: {
     throw new Error(`Create vacancy failed (${res.status})`);
   }
 
-  const raw = (await res.json()) as VacancyApiRecord;
-  return mapVacancyFromApi(raw);
+  const vacancy = (await res.json()) as Entity.Vacancy;
+  return vacancy;
 }
 
-export async function getVacanciesOnBackend(): Promise<Vacancy[]> {
+export async function getVacanciesOnBackend(): Promise<{ vacancies: Entity.Vacancy[] }> {
   const userId = getOrCreateUserId();
 
   const res = await fetch(`${API_BASE}/vacancies?user_id=${userId}`);
@@ -75,9 +37,9 @@ export async function getVacanciesOnBackend(): Promise<Vacancy[]> {
     throw new Error(`Get vacancies failed (${res.status})`);
   }
 
-  const data = await res.json();
+  const data = await res.json() as { vacancies: Entity.Vacancy[] };
 
-  return (data.vacancies as VacancyApiRecord[]).map(mapVacancyFromApi);
+  return data;
 }
 
 export async function updateVacancyOnBackend(
@@ -87,9 +49,9 @@ export async function updateVacancyOnBackend(
     company?: string;
     description: string;
     planned_stages: number;
-    stages: VacancyStage[];
+    stages: Entity.VacancyStage[];
   }
-): Promise<Vacancy> {
+): Promise<Entity.Vacancy> {
   const userId = getOrCreateUserId();
 
   const res = await fetch(`${API_BASE}/vacancies/${vacancyId}`, {
@@ -114,8 +76,9 @@ export async function updateVacancyOnBackend(
     throw new Error(`Save vacancy failed (${res.status})`);
   }
 
-  const raw = (await res.json()) as VacancyApiRecord;
-  return mapVacancyFromApi(raw);
+  const vacancy = await res.json() as Entity.Vacancy;
+
+  return vacancy;
 }
 
 export async function deleteVacancyOnBackend(vacancyId: string): Promise<void> {

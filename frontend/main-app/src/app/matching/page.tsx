@@ -1,17 +1,27 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { useMentor, Vacancy } from "../mentor-context";
+import React, { useEffect, useMemo, useState } from "react";
+import { getVacanciesForMatching } from "../../shared/api/matchingApi";
+import { useMentor } from "../mentor-context";
 import { VacancyMatchingCard, type RankedVacancy } from "./children/VacancyMatchingCard";
 
-function computeFitScore(cvText: string, vacancy: Vacancy): RankedVacancy {
+function computeFitScore(cvText: string, vacancy: Entity.Vacancy): RankedVacancy {
+  const stages = vacancy.stages ?? [];
   const base: RankedVacancy = {
     ...vacancy,
+    stages,
     fitScore: 0,
     completedStages: 0,
-    totalStages: vacancy.stages.length,
+    totalStages: stages.length,
     failedStages: 0,
     recommendations: [],
+    whyScore: vacancy.reason ?? null,
+    techScore: vacancy.tech_score ?? null,
+    yearsScore: vacancy.years_score ?? null,
+    otherScore: vacancy.other_score ?? null,
+    domainScore: vacancy.domain_score ?? null,
+    alignedSkills: vacancy.aligned_skills ?? [],
+    notAlignedSkills: vacancy.not_aligned_skills ?? [],
   };
 
   const plainCv = cvText.toLowerCase();
@@ -42,11 +52,9 @@ function computeFitScore(cvText: string, vacancy: Vacancy): RankedVacancy {
   const keywordScore =
     keywords.length === 0 ? 0 : (matchCount / keywords.length) * 70;
 
-  const completedStages = vacancy.stages.filter((s) => s.status === "done")
-    .length;
-  const failedStages = vacancy.stages.filter((s) => s.status === "failed")
-    .length;
-  const totalStages = vacancy.stages.length || 1;
+  const completedStages = stages.filter((s) => s.status === "done").length;
+  const failedStages = stages.filter((s) => s.status === "failed").length;
+  const totalStages = stages.length || 1;
 
   const progressScore = (completedStages / totalStages) * 30;
   const penalty = failedStages * 5;
@@ -96,8 +104,21 @@ function computeFitScore(cvText: string, vacancy: Vacancy): RankedVacancy {
 }
 
 export default function RankingPage() {
-  const { cv, vacancies } = useMentor();
+  const { cv } = useMentor();
+  const [vacancies, setVacancies] = useState<Entity.Vacancy[]>([]);
+  const [loadingVacancies, setLoadingVacancies] = useState(true);
+  const [vacanciesError, setVacanciesError] = useState<string | null>(null);
   const [activeVacancyId, setActiveVacancyId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadVacancies = async () => { 
+      const vacancies = await getVacanciesForMatching();
+      setVacancies(vacancies);
+      setLoadingVacancies(false);
+    };
+
+    loadVacancies();
+  }, []);
 
   const ranked = useMemo(() => {
     const cvText =
@@ -106,9 +127,22 @@ export default function RankingPage() {
         .replace(/\s+/g, " ")
         .trim() ?? "";
 
-    return vacancies
-      .map((v) => computeFitScore(cvText, v))
-      .sort((a, b) => b.fitScore - a.fitScore);
+    const hasApiRank = vacancies.some(
+      (v) => typeof v.match_score === "number"
+    );
+    const mapped = vacancies.map((v) => {
+      const local = computeFitScore(cvText, v);
+      const api = v.match_score;
+      if (typeof api === "number") {
+        return { ...local, fitScore: Math.max(0, Math.min(100, Math.round(api))) };
+      }
+      return local;
+    });
+
+    if (hasApiRank) {
+      return mapped;
+    }
+    return mapped.sort((a, b) => b.fitScore - a.fitScore);
   }, [cv, vacancies]);
 
   return (
@@ -118,9 +152,9 @@ export default function RankingPage() {
           Matching
         </h1>
         <p className="max-w-2xl text-lg text-zinc-600">
-          Vacancies are ordered from strongest to weakest fit based on your CV
-          and interview progress. Use the insights to decide where to invest
-          your time and which skills to grow.
+          When your CV is saved to the backend, vacancies are ordered by
+          OpenAI from best fit to weakest. Otherwise they stay in recency order
+          and scores use local keyword heuristics.
         </p>
       </header>
 
@@ -131,11 +165,21 @@ export default function RankingPage() {
         </p>
       )}
 
-      {ranked.length === 0 ? (
+      {loadingVacancies && (
+        <p className="text-lg text-zinc-500">Loading vacancies…</p>
+      )}
+
+      {vacanciesError && !loadingVacancies && (
+        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-lg text-red-800">
+          {vacanciesError}
+        </p>
+      )}
+
+      {!loadingVacancies && !vacanciesError && ranked.length === 0 ? (
         <p className="text-lg text-zinc-500">
           No vacancies to rank yet. Add a few on the Vacancies page first.
         </p>
-      ) : (
+      ) : !loadingVacancies && !vacanciesError ? (
         <div className="flex flex-col gap-3">
           {ranked.map((vacancy, index) => (
             <VacancyMatchingCard
@@ -147,7 +191,7 @@ export default function RankingPage() {
             />
           ))}
         </div>
-      )}
+      ) : null}
     </section>
   );
 }

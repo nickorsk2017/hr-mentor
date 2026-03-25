@@ -4,10 +4,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from .api.ai_routes import router as ai_router
-from .api.routes import router as matching_router
-from .config import settings
-from .db.session import engine
+from app.api.routes import router
+from app.config import settings
+from app.db.session import engine
 
 
 async def init_db() -> None:
@@ -27,8 +26,7 @@ async def init_db() -> None:
 
 def create_app() -> FastAPI:
     app = FastAPI(title=settings.app_name)
-    app.include_router(matching_router, prefix="/v1")
-    app.include_router(ai_router, prefix="/ai")
+    app.include_router(router)
 
     @app.on_event("startup")
     async def _startup() -> None:

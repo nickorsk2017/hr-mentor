@@ -23,6 +23,12 @@ class Settings(BaseSettings):
     pinecone_api_key: str = ""
     pinecone_index_name: str = ""
     pinecone_namespace: str = "vacancies"
+    # Max vectors returned per user for GET /v1/vacancies (semantic query + metadata filter)
+    pinecone_user_vacancies_top_k: int = 2000
+
+    # Groq — used for CV-vacancy ranking chat model
+    groq_api_key: str = ""
+    groq_chat_model: str = "llama-3.1-8b-instant"
 
 
 settings = Settings()

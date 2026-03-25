@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cx } from "@/libs/utils";
-import type { Vacancy, VacancyStage } from "../../mentor-context";
+import type { Vacancy, VacancyStage } from "@/app/mentor-context";
 import { Button } from "@/shared/ui/Button";
-import { CvRichEditor } from "@/shared/ui/CvRichEditor";
+import { RichEditor } from "@/shared/ui/RichEditor";
 
 type VacancyCardProps = {
   vacancy: Vacancy;
@@ -204,7 +204,7 @@ export function VacancyCard({
     >
       {isActive && <div className="sticky top-[72px] h-[20px] w-full bg-white z-50"></div>}
       <div className={cx("flex flex-col relative bg-white")}>
-        <header className={cx("top-20 z-40 bg-white/70 backdrop-blur z-50 rounded-2xl !border-b-0 !rounded-b-none border border-gray-300 duration-200", isActive ? "border-violet-500 sticky " : "static border-gray-300")}>
+        <header className={cx("top-18 z-40 bg-white/70 backdrop-blur z-50 rounded-2xl !border-b-0 !rounded-b-none border border-gray-300 duration-200", isActive ? "border-violet-500 sticky " : "static border-gray-300")}>
         <div onMouseDown={() => {if(!isActive) onToggle()}} className={cx("flex flex-col gap-2  p-4 bg-transparent", isActive ? "border-violet-500" : "border-gray-300")}>
             <input
               ref={titleRef}
@@ -231,12 +231,12 @@ export function VacancyCard({
         </header>
 
         <div className={cx("flex flex-col gap-2 p-4 pt-0 border !border-t-0 !border-b-0 bg-white", isActive ? "border-violet-500 " : "static border-gray-300")}>
-          {isActive && <CvRichEditor
+          {isActive && <RichEditor
             size="small"
             ref={descriptionRef}
             onMouseUp={(e) => e.stopPropagation()}
             className="max-h-auto mt-2 w-full"
-            classToolbar="!top-[168px]"
+            classToolbar="!top-[158px]"
             valueHtml={vacancy.description}
             onChangeHtml={(next) =>
               onUpdateVacancy({

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useMentor } from "../mentor-context";
-import { CvRichEditor } from "../../shared/ui/CvRichEditor";
+import { RichEditor } from "../../shared/ui/RichEditor";
 import { Button } from "../../shared/ui/Button";
 import { CircleLoader } from "../../shared/ui/CircleLoader";
 import {
@@ -10,13 +10,13 @@ import {
   saveCvToBackend,
 } from "../../shared/api/cvApi";
 import { Header } from "@/shared/layout/Header";
+import { Container } from "@/shared/layout/Container";
 
 export default function MyCvPage() {
   const { cv, setCv } = useMentor();
   const [draftHtml, setDraftHtml] = useState<string>(cv?.contentHtml ?? "");
   const [fileName] = useState<string | undefined>(cv?.uploadedFileName);
   const [isLoading, setIsLoading] = useState(false);
-  const [backendMessage, setBackendMessage] = useState<string>("");
   const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const timeLoadingRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
@@ -44,12 +44,7 @@ export default function MyCvPage() {
           uploadedFileName: fileName,
         });
 
-        setBackendMessage("Loaded CV from backend");
-      } catch {
-        if (!cancelled) {
-          setBackendMessage("Could not load CV from backend");
-        }
-      } finally {
+    } finally {
         if (!cancelled) setIsLoading(false);
       }
     };
@@ -63,20 +58,12 @@ export default function MyCvPage() {
 
   const handleSave = async () => {
     setIsLoading(true);
-    setBackendMessage("");
     clearTimeout(timeLoadingRef.current);
+    await saveCvToBackend(draftHtml);
 
-    try {
-      await saveCvToBackend(draftHtml);
-      setBackendMessage("");
-    } catch {
-      setBackendMessage("Backend save failed. Kept local data.");
-    } finally {
-
-      timeLoadingRef.current = setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
-    }
+    timeLoadingRef.current = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
 
     setCv({
       contentHtml: draftHtml,
@@ -106,16 +93,13 @@ export default function MyCvPage() {
         title="My CV"
       />
 
-      <div className="flex flex-col w-fulljustify-center items-center">
-        <div className="w-full  max-w-6xl ">
-
-          <CvRichEditor valueHtml={draftHtml} onChangeHtml={handleChangeHtml} classToolbar="!top-[64px]" />
-          <p className="text-[11px] text-zinc-500">
-            Tip: Include key skills, technologies, and achievements. The ranking
-            engine uses this text to compare with vacancies.
-          </p>
-        </div>
-      </div>  
+      <Container>
+        <RichEditor valueHtml={draftHtml} onChangeHtml={handleChangeHtml} classToolbar="!top-[64px]" />
+        <p className="text-[11px] text-zinc-500">
+          Tip: Include key skills, technologies, and achievements. The ranking
+          engine uses this text to compare with vacancies.
+        </p>
+      </Container>
     </section>
   );
 }

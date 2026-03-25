@@ -6,7 +6,7 @@ import StarterKit from "@tiptap/starter-kit";
 import { Button } from "./Button";
 import type { Size } from "./Button";
 
-type CvRichEditorProps = {
+type RichEditorProps = {
   valueHtml: string;
   onChangeHtml: (nextHtml: string) => void;
   autoFocus?: boolean;
@@ -16,11 +16,11 @@ type CvRichEditorProps = {
   onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 
-export type CvRichEditorHandle = {
+export type RichEditorHandle = {
   focus: () => void;
 };
 
-export const CvRichEditor = React.forwardRef<CvRichEditorHandle, CvRichEditorProps>(function CvRichEditor({
+export const RichEditor = React.forwardRef<RichEditorHandle, RichEditorProps>(function RichEditor({
   valueHtml,
   onChangeHtml,
   autoFocus,
@@ -79,12 +79,12 @@ export const CvRichEditor = React.forwardRef<CvRichEditorHandle, CvRichEditorPro
   return (
     <div
       onClick={onMouseUp}
-      className={`cursor-text  height-auto border border-zinc-200 bg-white border-t-0 rounded-2xl ${
+      className={`cursor-text  height-auto border border-zinc-200 bg-white border-t-0 ${
         className ?? ""
       }`}
     >
       {/* Toolbar sticks to the top of this scrollable editor card */}
-      <div className={`sticky top-20.5 z-50 flex flex-wrap items-center gap-1 border-t border-b border-zinc-200 bg-white/90 px-3 py-2 backdrop-blur rounded-t-2xl ${classToolbar}`}>
+      <div className={`sticky top-20.5 z-50 flex flex-wrap items-center gap-1 border-t border-b border-zinc-200 bg-white/90 px-3 py-2 backdrop-blur ${classToolbar}`}>
         <Button
           type="button"
           size={size}

@@ -23,7 +23,7 @@ class ExtractedJobDescription(BaseModel):
     company_industry: str = ""
     company_location: str = ""
     company_website: str = ""
-    short_description: str = Field(
+    summary: str = Field(
         default="",
         description="""SHORT_DESCRIPTION MUST DESCRIBE ABOUT COMPANY, TEAM, RESPONSIBILITIES, BENEFITS, APPROACHES, WHAT IS IMPORTANT.
 SHORT_DESCRIPTION SHOULD BE 5-15 SENTENCES.""",

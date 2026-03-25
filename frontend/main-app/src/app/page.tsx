@@ -1,18 +1,17 @@
+import { Header } from "@/shared/layout/Header";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <section className="flex w-full flex-col gap-10">
-      <div className="mt-4 flex flex-col gap-4">
-        <h1 className="text-3xl font-semibold tracking-tight text-zinc-950">
-        AI Carrier Mentor for your career growth
-        </h1>
-        <p className="max-w-2xl text-sm text-zinc-600">
-          Upload your CV, track vacancies and interview stages, and let an AI
-          mentor rank opportunities and suggest technologies to grow into your
-          next role.
-        </p>
-      </div>
+    <section className="flex w-full flex-col gap-14">
+      <Header
+        title="AI Carrier Mentor for your career growth"
+      />
+      <p className="max-w-2xl text-sm text-zinc-600">
+        Upload your CV, track vacancies and interview stages, and let an AI
+        mentor rank opportunities and suggest technologies to grow into your
+        next role.
+      </p>
 
       <div className="grid gap-4 md:grid-cols-3">
         <Link
