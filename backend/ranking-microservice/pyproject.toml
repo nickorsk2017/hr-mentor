@@ -24,7 +24,7 @@ dependencies = [
 ]
 
 [project.scripts]
-ai-ranking-microservice = "app.main:main"
+ranking-microservice = "app.main:main"
 
 [tool.setuptools]
 include-package-data = false

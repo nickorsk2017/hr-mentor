@@ -1,0 +1,13 @@
+# Python build / packaging artifacts
+*.egg-info/
+app/*.egg-info/
+__pycache__
+
+# Virtual environment
+.venv/
+
+# Environment variables
+.env
+
+# FAISS index
+data/

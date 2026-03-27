@@ -9,5 +9,5 @@ __pycache__
 # Environment variables
 .env
 
-# FAISS index
+# Data artifacts
 data/

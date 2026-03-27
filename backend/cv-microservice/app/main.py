@@ -4,13 +4,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from .api.routes import router as cv_router
+from .api.routes import router as api_router
 from .db.session import engine
 from .config import settings
 
 
 async def init_db() -> None:
-    """Verify PostgreSQL is reachable. Apply schema with `alembic upgrade head`."""
     try:
         async with engine.connect() as conn:
             await conn.execute(text("SELECT 1"))
@@ -26,14 +25,14 @@ async def init_db() -> None:
 
 def create_app() -> FastAPI:
     app = FastAPI(title=settings.app_name)
-    app.include_router(cv_router)
+    app.include_router(api_router)
 
     @app.on_event("startup")
     async def _startup() -> None:
         await init_db()
 
     app.add_middleware(
-    CORSMiddleware,
+        CORSMiddleware,
         allow_origins=["http://localhost:3000"],
         allow_credentials=True,
         allow_methods=["*"],
@@ -47,11 +46,7 @@ app = create_app()
 
 
 def main() -> int:
-    """
-    Console-script entrypoint used by `cv-microservice`.
-    """
     import uvicorn
 
     uvicorn.run("app.main:app", host="0.0.0.0", port=settings.port)
     return 0
-

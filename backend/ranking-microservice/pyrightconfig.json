@@ -3,11 +3,11 @@
   "pythonVersion": "3.13",
   "venvPath": ".",
   "venv": ".venv",
-  "extraPaths": ["app", ".venv/lib/python3.13/site-packages"],
+  "extraPaths": ["app", "../common", ".venv/lib/python3.13/site-packages"],
   "executionEnvironments": [
     {
       "root": "app",
-      "extraPaths": ["app", ".venv/lib/python3.13/site-packages"]
+      "extraPaths": ["app", "../common", ".venv/lib/python3.13/site-packages"]
     }
   ]
 }

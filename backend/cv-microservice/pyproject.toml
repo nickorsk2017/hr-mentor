@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "cv-microservice"
 version = "0.1.0"
-description = "FastAPI microservice for CV storage and analysis"
+description = "FastAPI microservice for CV storage"
 readme = "README.md"
 requires-python = ">=3.11"
 
@@ -18,15 +18,12 @@ dependencies = [
   "pydantic>=2",
   "pydantic==2.10.3",
   "pydantic-settings==2.6.1",
-  "psycopg2>=2.9.11",
-  "alembic>=1.14",
 ]
 
 [project.scripts]
-cv-microservice = "app.main:main"
+cv-microservice = "cv_runner:main"
 
 [tool.setuptools]
 include-package-data = false
 packages = ["app"]
-
-
+py-modules = ["cv_runner"]

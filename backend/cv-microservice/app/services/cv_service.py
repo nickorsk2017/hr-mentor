@@ -14,10 +14,11 @@ from ..schemas.cv import UpsertCVRequest, CVResponse
 def health_check() -> dict:
     return {"status": "ok"}
 
+
 async def _get_cv_or_404(db: AsyncSession, cv_id: uuid.UUID) -> CVModel:
     result = await db.execute(select(CVModel).where(CVModel.id == cv_id))
     cv = result.scalar_one_or_none()
-    
+
     if not cv:
         raise HTTPException(status_code=404, detail="CV not found")
     return cv
@@ -31,7 +32,7 @@ async def upsert_cv(req: UpsertCVRequest) -> CVResponse:
         db.add(cv)
         await db.commit()
         await db.refresh(cv)
-        
+
         return CVResponse(
             id=cv.id,
             user_id=cv.user_id,
@@ -50,5 +51,3 @@ async def get_cv(cv_id: uuid.UUID) -> CVResponse:
             cv_text=cv.cv_text,
             created_at=cv.created_at,
         )
-
-

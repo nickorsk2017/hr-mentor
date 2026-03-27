@@ -1,0 +1,2 @@
+"""vacancy-microservice app package."""
+

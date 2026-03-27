@@ -1,7 +1,8 @@
-const DEFAULT_API_BASE = "http://localhost:8000";
+const DEV_CV_MICROSERVICE_URL = "http://localhost:8004";
+
 export const API_BASE =
   process.env.NEXT_PUBLIC_CV_MICROSERVICE_URL?.replace(/\/$/, "") ??
-  DEFAULT_API_BASE;
+  DEV_CV_MICROSERVICE_URL;
 
 const USER_ID_KEY = "ai-hr-user-id";
 const CV_ID_KEY = "ai-hr-cv-id";

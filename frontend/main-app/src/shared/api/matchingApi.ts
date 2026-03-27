@@ -1,21 +1,21 @@
 import { getOrCreateUserId } from "./cvApi";
 
-const DEFAULT_MATCHING_BASE = "http://localhost:8001";
-const DEFAULT_RAG_INDEX_BASE = "http://localhost:8002";
+const DEV_MATCHING_MICROSERVICE_URL = "http://localhost:8004";
+const DEV_RAG_INDEX_MICROSERVICE_URL = "http://localhost:8004";
 
-export const MATCHING_API_BASE =
-  process.env.NEXT_PUBLIC_AI_MATCHING_MICROSERVICE_URL?.replace(/\/$/, "") ??
-  DEFAULT_MATCHING_BASE;
+export const MATCHING_MICROSERVICE_API_URL =
+  process.env.NEXT_PUBLIC_AI_MATCHING_MICROSERVICE_URL ??
+  DEV_MATCHING_MICROSERVICE_URL;
 
-/** Vacancy upsert/delete in Pinecone (rag-index-microservice). */
-export const RAG_INDEX_API_BASE =
-  process.env.NEXT_PUBLIC_RAG_INDEX_MICROSERVICE_URL?.replace(/\/$/, "") ??
-  DEFAULT_RAG_INDEX_BASE;
+
+export const RAG_INDEX_MICROSERVICE_API_URL =
+  process.env.NEXT_PUBLIC_RAG_INDEX_MICROSERVICE_URL ??
+  DEV_RAG_INDEX_MICROSERVICE_URL;
 
 export async function getVacanciesForMatching(): Promise<Entity.Vacancy[]> {
   const userId = getOrCreateUserId();
   const res = await fetch(
-    `${MATCHING_API_BASE}/v1/rankings?user_id=${encodeURIComponent(userId)}`
+    `${MATCHING_MICROSERVICE_API_URL}/v1/rankings?user_id=${encodeURIComponent(userId)}`
   );
 
   if (!res.ok) {
@@ -38,7 +38,7 @@ export async function indexVacancyForMatching(vacancy: Entity.Vacancy): Promise<
     [title, company].filter(Boolean).join(" — ") ||
     "No description yet.";
 
-  const res = await fetch(`${RAG_INDEX_API_BASE}/v1/vacancies/index`, {
+  const res = await fetch(`${RAG_INDEX_MICROSERVICE_API_URL}/v1/vacancies/index`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -62,7 +62,7 @@ export async function deleteVacancyFromMatchingIndex(
   vacancyId: string
 ): Promise<void> {
   const res = await fetch(
-    `${RAG_INDEX_API_BASE}/v1/vacancies/index/${encodeURIComponent(vacancyId)}`,
+    `${RAG_INDEX_MICROSERVICE_API_URL}/v1/vacancies/index/${encodeURIComponent(vacancyId)}`,
     {
       method: "DELETE",
     }
