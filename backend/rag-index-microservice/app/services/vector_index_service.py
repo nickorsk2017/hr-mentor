@@ -12,7 +12,7 @@ from app.schemas.indexing import (
     VacancyIndexResponse,
     DeleteVacancyIndexResponse,
 )
-from app.services.job_extraction_service import extract_job_description
+from app.services.vacancy_data_extraction_service import extract_vacancy_data_for_index
 
 
 def _build_embeddings_client() -> OpenAIEmbeddings:
@@ -29,7 +29,7 @@ def _build_embeddings_client() -> OpenAIEmbeddings:
     return OpenAIEmbeddings(**kwargs)
 
 
-def _embed_sync(text: str) -> list[float]:
+def _build_embedding_vacancy_data(text: str) -> list[float]:
     emb = _build_embeddings_client()
     return emb.embed_query(text)
 
@@ -68,15 +68,15 @@ def _delete_sync(vacancy_id: str) -> None:
 
 
 async def add_to_index(req: VacancyIndexRequest) -> VacancyIndexResponse:
-    extracted = await extract_job_description(
+    extracted_vacancy_data = await extract_vacancy_data_for_index(
         req.title,
         req.company,
         req.description,
     )
-    extracted_dump = extracted.model_dump(mode="json")
-    summary = (extracted.summary or "").strip()
-
-    values = await asyncio.to_thread(_embed_sync, summary)
+    summary = extracted_vacancy_data.summary
+    extracted_vacancy_data = extracted_vacancy_data.model_dump(mode="json")
+  
+    embedding = await asyncio.to_thread(_build_embedding_vacancy_data, summary)
 
     metadata = {
         "kind": "vacancy",
@@ -84,20 +84,23 @@ async def add_to_index(req: VacancyIndexRequest) -> VacancyIndexResponse:
         "vacancy_id": req.vacancy_id,
         "company": req.company,
         "summary": summary,
-        **extracted.model_dump(mode="json"),
+        **extracted_vacancy_data,
     }
+
+    print(f"metadata")
+    print(metadata)
 
     await asyncio.to_thread(
         _upsert_to_vector_db,
-        [{"id": req.vacancy_id, "values": values, "metadata": metadata}],
+        [{"id": req.vacancy_id, "values": embedding, "metadata": metadata}],
     )
 
     return VacancyIndexResponse(
         vacancy_id=req.vacancy_id,
-        dimensions=len(values),
+        dimensions=len(embedding),
         namespace=settings.pinecone_namespace,
         summary=summary,
-        extracted=extracted_dump,
+        extracted=extracted_vacancy_data,
     )
 
 

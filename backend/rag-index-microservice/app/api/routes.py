@@ -11,7 +11,7 @@ from app.schemas.indexing import (
 )
 from app.services import vector_index_service
 
-router = APIRouter(prefix="/v1/vacancies")
+router = APIRouter(prefix="/vacancies")
 
 
 @router.get("/health", response_model=HealthResponse)

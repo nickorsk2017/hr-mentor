@@ -75,7 +75,7 @@ async def delete_vacancy(vacancy_id: UUID, user_id: UUID = Query(...)) -> Any:
     )
 
 
-@router.get("/v1/rankings/health")
+@router.get("/rankings/health")
 async def ranking_health() -> Any:
     return await forward_json(
         method="GET",
@@ -100,7 +100,7 @@ async def rag_index_health() -> Any:
         method="GET",
         base_url=settings.rag_index_microservice_url,
         path="/vacancies/health",
-    )
+)
 
 
 @router.post("/vacancies/index")

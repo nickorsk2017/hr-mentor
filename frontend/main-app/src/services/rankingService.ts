@@ -1,21 +1,11 @@
 import { getOrCreateUserId } from "./cvService";
 
-const DEV_MATCHING_MICROSERVICE_URL = "http://localhost:8004";
-const DEV_RAG_INDEX_MICROSERVICE_URL = "http://localhost:8004";
-
-export const MATCHING_MICROSERVICE_API_URL =
-  process.env.NEXT_PUBLIC_AI_MATCHING_MICROSERVICE_URL ??
-  DEV_MATCHING_MICROSERVICE_URL;
-
-
-export const RAG_INDEX_MICROSERVICE_API_URL =
-  process.env.NEXT_PUBLIC_RAG_INDEX_MICROSERVICE_URL ??
-  DEV_RAG_INDEX_MICROSERVICE_URL;
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8004" ;
 
 export async function getRenkingVacancies(): Promise<Entity.Vacancy[]> {
   const userId = getOrCreateUserId();
   const res = await fetch(
-    `${MATCHING_MICROSERVICE_API_URL}/v1/rankings?user_id=${encodeURIComponent(userId)}`
+    `${API_URL}/rankings?user_id=${encodeURIComponent(userId)}`
   );
 
   if (!res.ok) {
@@ -38,7 +28,7 @@ export async function indexVacancyForMatching(vacancy: Entity.Vacancy): Promise<
     [title, company].filter(Boolean).join(" — ") ||
     "No description yet.";
 
-  const res = await fetch(`${RAG_INDEX_MICROSERVICE_API_URL}/v1/vacancies/index`, {
+  const res = await fetch(`${API_URL}/vacancies/index`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -62,7 +52,7 @@ export async function deleteVacancyFromMatchingIndex(
   vacancyId: string
 ): Promise<void> {
   const res = await fetch(
-    `${RAG_INDEX_MICROSERVICE_API_URL}/v1/vacancies/index/${encodeURIComponent(vacancyId)}`,
+    `${API_URL}/v1/vacancies/index/${encodeURIComponent(vacancyId)}`,
     {
       method: "DELETE",
     }

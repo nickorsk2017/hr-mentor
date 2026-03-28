@@ -21,7 +21,7 @@ from app.prompts.ranking_prompt import (
     CV_VACANCY_RANK_USER_TEMPLATE,
 )
 from app.schemas.cv_vacancy_ranking import CVVacancyRankingResult
-from app.services.text_utils import strip_html_to_text
+from app.utils import strip_html_to_text
 from app.services.vacancy_rank_input import VacancyFromIndex
 
 from app.services.vector_store_service import (

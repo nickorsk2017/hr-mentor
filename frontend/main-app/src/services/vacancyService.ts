@@ -1,6 +1,6 @@
 import { getOrCreateUserId } from "./cvService";
 
-const DEV_VACANCY_MICROSERVICE_URL = process.env.NEXT_PUBLIC_VACANCY_MICROSERVICE_URL ?? "http://localhost:8004" ;
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8004" ;
 
 export async function createVacancyOnBackend(payload: {
   title: string;
@@ -9,7 +9,7 @@ export async function createVacancyOnBackend(payload: {
 }): Promise<Entity.Vacancy> {
   const userId = getOrCreateUserId();
 
-  const res = await fetch(`${DEV_VACANCY_MICROSERVICE_URL}/vacancies`, {
+  const res = await fetch(`${API_URL}/vacancies`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -33,7 +33,7 @@ export async function createVacancyOnBackend(payload: {
 export async function getVacanciesOnBackend(): Promise<{ vacancies: Entity.Vacancy[] }> {
   const userId = getOrCreateUserId();
 
-  const res = await fetch(`${DEV_VACANCY_MICROSERVICE_URL}/vacancies?user_id=${userId}`);
+  const res = await fetch(`${API_URL}/vacancies?user_id=${userId}`);
 
   if (!res.ok) {
     throw new Error(`Get vacancies failed (${res.status})`);
@@ -56,7 +56,7 @@ export async function updateVacancyOnBackend(
 ): Promise<Entity.Vacancy> {
   const userId = getOrCreateUserId();
 
-  const res = await fetch(`${DEV_VACANCY_MICROSERVICE_URL}/vacancies/${vacancyId}`, {
+  const res = await fetch(`${API_URL}/vacancies/${vacancyId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -85,7 +85,7 @@ export async function updateVacancyOnBackend(
 
 export async function deleteVacancyOnBackend(vacancyId: string): Promise<void> {
   const userId = getOrCreateUserId();
-  const res = await fetch(`${DEV_VACANCY_MICROSERVICE_URL}/vacancies/${vacancyId}?user_id=${userId}`, {
+  const res = await fetch(`${API_URL}/vacancies/${vacancyId}?user_id=${userId}`, {
     method: "DELETE",
   });
 

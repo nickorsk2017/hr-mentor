@@ -9,7 +9,7 @@ from app.schemas.ranking import HealthResponse
 from app.schemas.postgres_vacancy import VacanciesByUserResponse
 from app.services import vacancies_ranking_service
 
-router = APIRouter(prefix="/v1/rankings")
+router = APIRouter(prefix="/rankings")
 
 
 @router.get("/health", response_model=HealthResponse)

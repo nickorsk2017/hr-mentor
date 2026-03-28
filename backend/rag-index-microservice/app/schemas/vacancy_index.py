@@ -3,7 +3,7 @@ from __future__ import annotations
 from pydantic import BaseModel, Field
 
 
-class ExtractedJobDescription(BaseModel):
+class VacancyIndexRecord(BaseModel):
     """Structured output aligned with EXTRACT_JOB_DESCRIPTION_PROMPT."""
 
     title: str = ""

@@ -1,4 +1,5 @@
 EXTRACT_JOB_FIELDS = """
+- title (string) // IMPORTANT: if not present, set value to empty string
 - skills (array of technologies)
 - seniority (string) // ONLY THIS VALUES: junior/mid/senior/lead
 - years_of_experience (string) // IMPORTANT: if not present, set value to empty string

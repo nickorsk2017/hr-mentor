@@ -1,8 +1,4 @@
-const DEV_CV_MICROSERVICE_URL = "http://localhost:8004";
-
-export const API_BASE =
-  process.env.NEXT_PUBLIC_CV_MICROSERVICE_URL?.replace(/\/$/, "") ??
-  DEV_CV_MICROSERVICE_URL;
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8004" ;
 
 const USER_ID_KEY = "ai-hr-user-id";
 const CV_ID_KEY = "ai-hr-cv-id";
@@ -26,7 +22,7 @@ export type CvBackendRecord = {
 
 export async function saveCvToBackend(cvText: string): Promise<CvBackendRecord> {
   const userId = getOrCreateUserId();
-  const res = await fetch(`${API_BASE}/cvs`, {
+  const res = await fetch(`${API_URL}/cvs`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ user_id: userId, cv_text: cvText }),
@@ -48,7 +44,7 @@ export async function getLastSavedCvFromBackend(): Promise<CvBackendRecord | nul
   const cvId = window.localStorage.getItem(CV_ID_KEY);
   if (!cvId) return null;
 
-  const res = await fetch(`${API_BASE}/cvs/${cvId}`);
+  const res = await fetch(`${API_URL}/cvs/${cvId}`);
   if (res.status === 404) return null;
   if (!res.ok) {
     throw new Error(`Load CV failed (${res.status})`);
