@@ -104,7 +104,7 @@ function computeFitScore(cvText: string, vacancy: Entity.Vacancy): Entity.Ranked
   };
 }
 
-export default function RankingPage() {
+export default function MatchingPage() {
   const cv = useCvStore((s) => s.cv);
   const vacancies = useVacancyMatchedStore((s) => s.vacancies);
   const loadingVacancies = useVacancyMatchedStore((s) => s.loadingVacancies);

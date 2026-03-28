@@ -4,43 +4,49 @@ FastAPI service for vacancy CRUD and interview-stage tracking.
 
 ## Endpoints
 
-- `GET /v1/health` – health check
-- `POST /v1/vacancies` – create vacancy
-- `PUT /v1/vacancies/{vacancy_id}` – update vacancy
-- `GET /v1/vacancies?user_id=<uuid>` – list user vacancies
-- `DELETE /v1/vacancies/{vacancy_id}?user_id=<uuid>` – delete vacancy
+- `GET /health` – health check
+- `POST /vacancies` – create vacancy
+- `PUT /vacancies/{vacancy_id}` – update vacancy
+- `GET /vacancies?user_id=<uuid>` – list user vacancies
+- `DELETE /vacancies/{vacancy_id}?user_id=<uuid>` – delete vacancy
 
 ## Run locally
 
-```bash
-cp .env.example .env
-# Set DATABASE_URL (e.g. postgresql+asyncpg://user:pass@localhost:5432/ai_hr)
+Configuration is read from **`backend/_common/.env`** (shared with other backend services):
 
-uv sync   # or: pip install .
-alembic upgrade head
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```bash
+cp ../_common/.env.example ../_common/.env
+# edit ../_common/.env — set DATABASE_URL, PORT (optional), etc.
+```
+
+Then:
+
+```bash
+uv sync
+uv run vacancy-microservice
+# or: uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ## Database migrations (Alembic)
 
-Migrations are centralized in `backend/common/db_models_and_migrations`.
-This service keeps `alembic.ini` wired to that shared migration project.
+Migrations live in **`backend/_common/db_models_and_migrations`**. They use the same **`backend/_common/.env`** for `DATABASE_URL` (sync driver is applied in Alembic).
 
 ```bash
-cd backend/vacancy-microservice
+cd ../_common/db_models_and_migrations
 alembic upgrade head
 ```
 
 Create a new revision after model changes:
 
 ```bash
+cd ../_common/db_models_and_migrations
 alembic revision --autogenerate -m "describe change"
 alembic upgrade head
 ```
 
 ## Notes
 
-- Schema is managed with Alembic; startup only checks that PostgreSQL is reachable.
+- Startup checks that PostgreSQL is reachable; schema comes from Alembic.
 
 ## Create vacancy request body
 
@@ -54,4 +60,3 @@ alembic upgrade head
   "stages": []
 }
 ```
-

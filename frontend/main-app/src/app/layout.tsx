@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Inter, Geist_Mono } from "next/font/google";
+import { SidebarNav } from "@/components/layout/SidebarNav";
 import "./globals.css";
-import { Providers } from "./providers";
-import { SidebarNav } from "@/shared/layout/SidebarNav";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -30,16 +28,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${geistMono.variable} antialiased text-zinc-900 relative`}
       >
-        <Providers>
-          <div className="min-h-screen flex items-start px-4 py-4 text-sm text-zinc-800">
+        <div className="min-h-screen flex items-start px-4 py-4 text-sm text-zinc-800">
             <SidebarNav />
-
             {/* Main content area */}
             <main className="flex-1">
               <div className="mx-auto px-6 py-4 relative">{children}</div>
             </main>
-          </div>
-        </Providers>
+        </div>
       </body>
     </html>
   );

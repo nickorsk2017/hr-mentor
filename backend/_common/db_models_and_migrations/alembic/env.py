@@ -14,13 +14,19 @@ _ROOT = Path(__file__).resolve().parents[1]
 if str(_ROOT.parent) not in sys.path:
     sys.path.insert(0, str(_ROOT.parent))
 
+from env_paths import COMMON_ENV_FILE  # noqa: E402
+
 from db_models_and_migrations.base import Base  # noqa: E402
 from db_models_and_migrations.models import cv as _cv  # noqa: F401, E402
 from db_models_and_migrations.models import vacancy as _vacancy  # noqa: F401, E402
 
 
 class _Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=COMMON_ENV_FILE,
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
     database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/ai_hr"
 
 
@@ -37,17 +43,13 @@ def get_sync_database_url() -> str:
     Alembic runs synchronously; use psycopg2 instead of asyncpg.
     Priority:
       1) DATABASE_URL env var
-      2) .env in current working directory (service-level migration flow)
-      3) .env in this common project
+      2) DATABASE_URL from ``backend/_common/.env`` (via pydantic-settings)
     """
     env_url = os.getenv("DATABASE_URL")
     if env_url:
         url = env_url
     else:
-        cwd_env = Path.cwd() / ".env"
-        project_env = _ROOT / ".env"
-        env_file = cwd_env if cwd_env.exists() else project_env
-        url = _Settings(_env_file=env_file).database_url
+        url = _Settings().database_url
 
     if "+asyncpg" in url:
         return url.replace("+asyncpg", "+psycopg2", 1)

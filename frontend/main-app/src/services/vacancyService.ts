@@ -1,4 +1,4 @@
-import { getOrCreateUserId } from "./cvApi";
+import { getOrCreateUserId } from "./cvService";
 
 const DEV_VACANCY_MICROSERVICE_URL = process.env.NEXT_PUBLIC_VACANCY_MICROSERVICE_URL ?? "http://localhost:8004" ;
 

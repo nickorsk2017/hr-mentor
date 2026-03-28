@@ -13,14 +13,8 @@ Shared SQLAlchemy models and Alembic migrations for backend microservices.
 From this project:
 
 ```bash
-cd backend/common/db_models_and_migrations
-cp .env.example .env
+cd backend/_common/db_models_and_migrations
 alembic upgrade head
 ```
 
-Or from a service that points to this migration project (for example `vacancy-microservice`):
-
-```bash
-cd backend/vacancy-microservice
-alembic upgrade head
-```
+Uses **`backend/_common/.env`** for `DATABASE_URL` (see `alembic/env.py`).

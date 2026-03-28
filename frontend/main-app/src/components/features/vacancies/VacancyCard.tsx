@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import { cx } from "@/libs/utils";
-import { Button } from "@/shared/ui/Button";
-import { RichEditor } from "@/shared/ui/RichEditor";
+import cx from "@/utils/cx";
+import { Button } from "@/components/common/ui/Button";
+import { RichEditor } from "@/components/common/ui/RichEditor";
 
 type VacancyCardProps = {
   vacancy: Entity.Vacancy;

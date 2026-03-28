@@ -1,25 +1,10 @@
 "use client";
 
 type ComponentProps = {
-  vacancy: RankedVacancy;
+  vacancy: Entity.RankedVacancy;
   index: number;
   isActive: boolean;
   onActivate: () => void;
-};
-
-export type RankedVacancy = Entity.Vacancy & {
-  fitScore: number;
-  completedStages: number;
-  totalStages: number;
-  failedStages: number;
-  recommendations: string[];
-  whyScore: string | null;
-  techScore: number | null;
-  yearsScore: number | null;
-  otherScore: number | null;
-  domainScore: number | null;
-  alignedSkills: string[];
-  notAlignedSkills: string[];
 };
 
 function scoreTone(score: number): string {
@@ -35,7 +20,7 @@ function chipStyle(kind: "aligned" | "missing"): string {
     : "border-zinc-200 bg-zinc-100 text-zinc-700";
 }
 
-export function VacancyMatchingCard({
+export function VacancyRankedCard({
   vacancy,
   index,
   isActive,
@@ -106,7 +91,7 @@ export function VacancyMatchingCard({
         <p className="text-sm font-medium text-zinc-700">Aligned Skills</p>
         <div className="flex flex-wrap gap-2">
           {aligned.length > 0 ? (
-            aligned.map((skill) => (
+            aligned.map((skill: string) => (
               <span
                 key={`aligned-${vacancy.id}-${skill}`}
                 className={`inline-flex items-center rounded-full border px-3 py-1 text-sm ${chipStyle("aligned")}`}
@@ -125,7 +110,7 @@ export function VacancyMatchingCard({
           <p className="text-sm font-medium text-zinc-700">Missing / Weak Skills</p>
           <div className="flex flex-wrap gap-2">
             {missing.length > 0 ? (
-              missing.map((skill) => (
+              missing.map((skill: string) => (
                 <span
                   key={`missing-${vacancy.id}-${skill}`}
                   className={`inline-flex items-center rounded-full border px-3 py-1 text-sm ${chipStyle("missing")}`}

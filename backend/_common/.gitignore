@@ -1,0 +1,6 @@
+.env
+
+# Python build / packaging artifacts
+*.egg-info/
+app/*.egg-info/
+__pycache__

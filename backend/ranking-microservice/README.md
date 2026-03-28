@@ -8,18 +8,29 @@ Vacancy **indexing** (LLM extract → embed → Pinecone upsert/delete) lives in
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/v1/vacancies/health` | Config flags |
-| `GET` | `/v1/vacancies?user_id={uuid}` | List vacancies from Pinecone; rank with CV when present |
+| `GET` | `/v1/rankings/health` | Config flags |
+| `GET` | `/v1/rankings?user_id={uuid}` | List vacancies from Pinecone; rank with CV when present |
 
 ## Run
 
+Configuration is read from **`backend/_common/.env`** (shared with other backend services):
+
 ```bash
-cp .env.example .env
+cp ../_common/.env.example ../_common/.env
+# edit ../_common/.env
+```
+
+Then:
+
+```bash
 uv sync
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
+uv run ranking-microservice
+# or: uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 ```
 
 ## Environment
+
+Variables are defined in **`backend/_common/.env`** (and overridden by process environment if set).
 
 | Variable | Purpose |
 |----------|---------|

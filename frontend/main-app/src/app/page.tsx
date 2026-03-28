@@ -1,4 +1,4 @@
-import { Container } from "@/shared/layout/Container";
+import { Container } from "@/components/layout/Container";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";

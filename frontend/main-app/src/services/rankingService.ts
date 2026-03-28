@@ -1,4 +1,4 @@
-import { getOrCreateUserId } from "./cvApi";
+import { getOrCreateUserId } from "./cvService";
 
 const DEV_MATCHING_MICROSERVICE_URL = "http://localhost:8004";
 const DEV_RAG_INDEX_MICROSERVICE_URL = "http://localhost:8004";
@@ -12,7 +12,7 @@ export const RAG_INDEX_MICROSERVICE_API_URL =
   process.env.NEXT_PUBLIC_RAG_INDEX_MICROSERVICE_URL ??
   DEV_RAG_INDEX_MICROSERVICE_URL;
 
-export async function getVacanciesForMatching(): Promise<Entity.Vacancy[]> {
+export async function getRenkingVacancies(): Promise<Entity.Vacancy[]> {
   const userId = getOrCreateUserId();
   const res = await fetch(
     `${MATCHING_MICROSERVICE_API_URL}/v1/rankings?user_id=${encodeURIComponent(userId)}`

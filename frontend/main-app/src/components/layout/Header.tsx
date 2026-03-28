@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/shared/ui/Button";
+import { Button } from "@/components/common/ui/Button";
 
 type HeaderProps = {
   title: string;

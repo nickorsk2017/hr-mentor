@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useMentor } from "@/app/mentor-context";
-import { Modal } from "@/shared/ui/Modal";
-import { Container } from "@/shared/layout/Container";
-import { Header } from "@/shared/layout/Header";
+import { useVacancyStore } from "@/stores/vacancyStore";
+import { Modal } from "@/components/common/ui/Modal";
+import { Container } from "@/components/layout/Container";
+import { Header } from "@/components/layout/Header";
 import { VacancyCard } from "./VacancyCard";
 import {
   deleteVacancyFromMatchingIndex,
   indexVacancyForMatching,
-} from "@/shared/api/matchingApi";
+} from "@/services/rankingService";
 import {
   createVacancyOnBackend,
   deleteVacancyOnBackend,
   updateVacancyOnBackend,
-} from "@/shared/api/vacancyApi";
+} from "@/services/vacancyService";
 
 export function VacanciesPage() {
   const {
@@ -25,7 +25,7 @@ export function VacanciesPage() {
     updateVacancyStages,
     setVacancyPlannedStageCount,
     fetchVacancies,
-  } = useMentor();
+  } = useVacancyStore();
 
   const [stageCountModalVacancyId, setStageCountModalVacancyId] =
     useState<string | null>(null);
