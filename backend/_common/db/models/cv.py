@@ -6,10 +6,10 @@ import uuid
 from sqlalchemy import DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from db.base import Base
+from _common.db.models.base import BaseModel
 
 
-class CV(Base):
+class CVModel(BaseModel):
     __tablename__ = "cvs"
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)

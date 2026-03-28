@@ -28,7 +28,7 @@ class VacancyFitItem(BaseModel):
     )
 
 
-class CVVacancyRankingResult(BaseModel):
+class RankingResponse(BaseModel):
     """Best match first; must cover every vacancy id exactly once."""
 
     rankings: list[VacancyFitItem] = Field(

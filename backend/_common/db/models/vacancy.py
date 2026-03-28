@@ -9,10 +9,10 @@ from sqlalchemy import DateTime, Integer, String, Text, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
-from db.base import Base
+from _common.db.models.base import BaseModel
 
 
-class Vacancy(Base):
+class VacancyModel(BaseModel):
     __tablename__ = "vacancies"
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)

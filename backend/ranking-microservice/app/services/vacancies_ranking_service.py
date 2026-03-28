@@ -3,11 +3,13 @@ from __future__ import annotations
 import asyncio
 import json
 from dataclasses import dataclass, field
-from app.models import CV as CVModel
+from app.models import CVModel
 from app.db.session import SessionLocal
 from uuid import UUID
+from typing import Any
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 from sqlalchemy import select
 
 from app.schemas.postgres_vacancy import (
@@ -20,9 +22,8 @@ from app.prompts.ranking_prompt import (
     CV_VACANCY_RANK_SYSTEM,
     CV_VACANCY_RANK_USER_TEMPLATE,
 )
-from app.schemas.cv_vacancy_ranking import CVVacancyRankingResult
+from app.schemas import RankingResponse
 from app.utils import strip_html_to_text
-from app.services.vacancy_rank_input import VacancyFromIndex
 
 from app.services.vector_store_service import (
     list_user_vacancies_from_pinecone,
@@ -78,15 +79,15 @@ def _vacancy_block(v: VacancyFromIndex) -> str:
     )
 
 
-def _get_ranking_data_llm(cv_text: str, vacancies_from_index: list[VacancyFromIndex]) -> CVVacancyRankingResult:
+def _get_ranking_data_llm(cv_text: str, vacancies_from_index: list[VacancyFromIndex]) -> RankingResponse:
     if not settings.groq_api_key:
         raise RuntimeError("GROQ_API_KEY is not set")
 
-    llm = ChatGroq(
-        model=settings.groq_chat_model,
-        api_key=settings.groq_api_key,
-        temperature=0.7,
-        model_kwargs={"response_format": {"type": "json_object"}},
+    llm = ChatOpenAI(
+        model="gpt-4o-mini",
+        api_key=settings.openai_api_key,
+        temperature=0,
+        response_format={"type": "json_object"},
     )
 
     blocks = "\n".join(_vacancy_block(vacancy_from_index) for vacancy_from_index in vacancies_from_index)
@@ -97,7 +98,6 @@ def _get_ranking_data_llm(cv_text: str, vacancies_from_index: list[VacancyFromIn
         cv_text=cv_plane_text,
         vacancy_blocks=blocks,
     )
-    print(cv_and_vacancies_list_prompt, 'cv_and_vacancies_list_prompt')
 
     raw = llm.invoke(
         [
@@ -107,7 +107,8 @@ def _get_ranking_data_llm(cv_text: str, vacancies_from_index: list[VacancyFromIn
     )
 
     data = json.loads(raw.content)
-    return CVVacancyRankingResult.model_validate(data)
+    print(data, 'data')
+    return RankingResponse.model_validate(data)
 
 
 def _opt_score(v: int | None) -> int | None:
@@ -118,7 +119,7 @@ def _opt_score(v: int | None) -> int | None:
 
 def _merge_ranking(
     vacancies_from_index: list[VacancyFromIndex],
-    ranking_data_llm: CVVacancyRankingResult,
+    ranking_data_llm: RankingResponse,
 ) -> list[VacancyRankingRow]:
     by_id: dict[str, VacancyFromIndex] = {str(r.id): r for r in vacancies_from_index}
     seen: set[str] = set()

@@ -29,7 +29,7 @@ export async function indexVacancyForMatching(vacancy: Entity.Vacancy): Promise<
     "No description yet.";
 
   const res = await fetch(`${API_URL}/vacancies/index`, {
-    method: "POST",
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       user_id: getOrCreateUserId(),

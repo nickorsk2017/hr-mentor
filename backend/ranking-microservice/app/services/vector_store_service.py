@@ -12,7 +12,7 @@ from langchain_openai import OpenAIEmbeddings
 from pinecone import Pinecone
 
 from app.config import settings
-from app.services.vacancy_rank_input import VacancyFromIndex
+from app.schemas import VacancyFromIndex
 
 
 @dataclass
@@ -66,16 +66,6 @@ def _get_summary_from_meta_data(md: dict[str, Any]) -> str:
         if summary:
             return summary
 
-    raw = md.get("extracted_json")
-    if isinstance(raw, str) and raw.strip():
-        try:
-            data = json.loads(raw)
-            summary = (data.get("summary") or "").strip()
-            if summary:
-                return summary
-        except json.JSONDecodeError:
-            pass
-
     title = (md.get("input_title") or md.get("title") or "").strip()
     role = (md.get("role") or "").strip()
     parts = [p for p in (title, role) if p]
@@ -103,16 +93,16 @@ def _metadata_pinecone_to_object(md: dict[str, Any]) -> VacancyFromIndex | None:
     )
 
 
-def _query_user_vacancies_sync(user_id: str, cv_text: str) -> list[VacancyVectorSearchRow]:
-    if not settings.pinecone_api_key or not settings.pinecone_index_name:
-        raise RuntimeError("PINECONE_API_KEY and PINECONE_INDEX_NAME must be set")
+def _query_user_vacancies(user_id: str, cv_text: str) -> list[VacancyVectorSearchRow]:
+    if not settings.pinecone_api_key or not settings.pinecone_index:
+        raise RuntimeError("PINECONE_API_KEY and pinecone_index must be set")
 
     text = (cv_text or "").strip()
     emb = _build_langchain_embeddings()
     vector = emb.embed_query(text)
 
     pc = Pinecone(api_key=settings.pinecone_api_key)
-    index = pc.Index(settings.pinecone_index_name)
+    index = pc.Index(settings.pinecone_index)
     top_k = max(1, int(settings.pinecone_user_vacancies_top_k))
 
     flt: dict[str, Any] = {"user_id": {"$eq": user_id}}
@@ -122,7 +112,7 @@ def _query_user_vacancies_sync(user_id: str, cv_text: str) -> list[VacancyVector
         filter=flt,
         top_k=top_k,
         include_metadata=True,
-        namespace=settings.pinecone_namespace,
+        namespace="vacancies",
     )
 
     result: list[VacancyVectorSearchRow] = []
@@ -140,7 +130,7 @@ async def list_user_vacancies_from_pinecone(
     cv_text: str,
 ) -> list[VacancyVectorSearchRow]:
     rows = await asyncio.to_thread(
-        _query_user_vacancies_sync,
+        _query_user_vacancies,
         str(user_id),
         cv_text,
     )

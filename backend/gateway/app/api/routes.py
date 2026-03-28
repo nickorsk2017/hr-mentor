@@ -6,6 +6,7 @@ from uuid import UUID
 from fastapi import APIRouter, Body, Query
 
 from app.config import settings
+from _common.schemas.vacancy_index import CvIndexPayload
 from app.services.proxy_service import forward_json
 
 router = APIRouter()
@@ -17,13 +18,16 @@ async def health() -> dict[str, str]:
 
 
 @router.put("/cvs")
-async def upsert_cv(body: dict[str, Any] = Body(...)) -> Any:
-    return await forward_json(
+async def upsert_cv(payload: CvIndexPayload) -> Any:
+    cv_response = await forward_json(
         method="PUT",
         base_url=settings.cv_microservice_url,
         path="/cvs",
-        json_body=body,
+        json_body=payload.model_dump(mode="json"),
     )
+    await index_cv(payload);
+
+    return cv_response
 
 
 @router.get("/cvs/{cv_id}")
@@ -103,13 +107,35 @@ async def rag_index_health() -> Any:
 )
 
 
-@router.post("/vacancies/index")
+@router.patch("/vacancies/index")
 async def index_vacancy(body: dict[str, Any] = Body(...)) -> Any:
     return await forward_json(
-        method="POST",
+        method="PATCH",
         base_url=settings.rag_index_microservice_url,
         path="/vacancies/index",
         json_body=body,
+    )
+
+
+@router.patch("/cv/index")
+async def index_cv(payload: CvIndexPayload) -> Any:
+    return await forward_json(
+        method="PATCH",
+        base_url=settings.rag_index_microservice_url,
+        path="/cv/index",
+        json_body=payload.model_dump(mode="json"),
+    )
+
+
+@router.delete("/cv/index")
+async def delete_cv_index(
+    user_id: str = Query(..., description="Client user id"),
+) -> Any:
+    return await forward_json(
+        method="DELETE",
+        base_url=settings.rag_index_microservice_url,
+        path="/cv/index",
+        params={"user_id": user_id},
     )
 
 

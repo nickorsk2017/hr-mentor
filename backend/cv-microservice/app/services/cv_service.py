@@ -6,13 +6,9 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..db.session import SessionLocal
-from ..models.cv import CV as CVModel
-from ..schemas.cv import UpsertCVRequest, CVResponse
-
-
-def health_check() -> dict:
-    return {"status": "ok"}
+from app.db.session import SessionLocal
+from app.models import CVModel
+from app.schemas import UpsertCVRequest, CVResponse
 
 
 async def _get_cv_or_404(db: AsyncSession, cv_id: uuid.UUID) -> CVModel:

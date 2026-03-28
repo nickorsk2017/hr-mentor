@@ -42,3 +42,21 @@ SUMMARY SHOULD BE 5-15 SENTENCES.
 - COMPANY_TYPE SHOULD BE IN FORMAT "startup" OR "enterprise" OR "government" OR "non-profit" OR "outsourcing" OR "other".
 - YEARS_OF_EXPERIENCE SHOULD BE IN FORMAT "0-1" OR "1-3" OR "3-5" OR "5-10" OR "10+".
 """
+
+EXTRACT_CV_FOR_INDEX_FIELDS = """
+- summary (string) // REQUIRED: 5–15 sentences, third person or neutral; concrete roles, stack, achievements
+- skills (array of strings) // technologies, tools, frameworks; deduplicated, Title Case where sensible
+- years_expereance (number) // total years of professional experience as a float (e.g. 5.5); use 0 only if truly unknown
+"""
+
+EXTRACT_CV_FOR_INDEX_PROMPT = """
+You extract structured fields from a CV or resume.
+
+Return JSON with exactly these fields:
+{FIELDS}
+
+Rules:
+- SUMMARY must be non-empty whenever the document contains any employment or project history; synthesize from the text.
+- SKILLS: only items clearly supported by the document; no fabrication.
+- years_expereance: infer from dates and stated experience; if ranges conflict, choose a reasonable single number.
+"""

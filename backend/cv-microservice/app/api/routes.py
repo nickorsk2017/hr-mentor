@@ -1,16 +1,16 @@
 from fastapi import APIRouter
 from uuid import UUID
 
-from ..services.cv_service import upsert_cv, get_cv, health_check
-from ..schemas.cv import UpsertCVRequest, CVResponse
+from app.services.cv_service import upsert_cv, get_cv
+from _common.schemas.cv import UpsertCVRequest, CVResponse
 
 router = APIRouter()
 
 
 @router.get("/health")
 def health() -> dict:
-    return health_check()
-
+    return {"status": "ok"}
+    
 
 @router.put("/cvs", response_model=CVResponse)
 async def upsert_cv_endpoint(req: UpsertCVRequest) -> CVResponse:

@@ -23,8 +23,7 @@ class Settings(BaseSettings):
     openai_embedding_dimensions: int = 1536
 
     pinecone_api_key: str = ""
-    pinecone_index_name: str = ""
-    pinecone_namespace: str = "vacancies"
+    pinecone_index: str = ""
 
 
 settings = Settings()
