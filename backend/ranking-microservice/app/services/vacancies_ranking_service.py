@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 from dataclasses import dataclass, field
-from app.models.cv import CV as CVModel
+from app.models import CV as CVModel
 from app.db.session import SessionLocal
 from uuid import UUID
 from langchain_core.messages import HumanMessage, SystemMessage

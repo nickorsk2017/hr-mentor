@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useCvStore } from "@/stores/cvStore";
 import { RichEditor } from "@/components/common/ui/RichEditor";
 import {
-  getLastSavedCvFromBackend,
-  saveCvToBackend,
+  getCV,
+  saveCV,
 } from "@/services/cvService";
 import { Header } from "@/components/layout/Header";
 import { Container } from "@/components/layout/Container";
@@ -34,7 +34,7 @@ export default function MyCVPage() {
       setIsLoading(true);
 
       try {
-        const saved = await getLastSavedCvFromBackend();
+        const saved = await getCV();
         if (!saved || cancelled) return;
         setDraftHtml(saved.cv_text);
 
@@ -58,7 +58,7 @@ export default function MyCVPage() {
   const handleSave = async () => {
     setIsLoading(true);
     clearTimeout(timeLoadingRef.current);
-    await saveCvToBackend(draftHtml);
+    await saveCV(draftHtml);
 
     timeLoadingRef.current = setTimeout(() => {
       setIsLoading(false);

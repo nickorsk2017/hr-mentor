@@ -29,17 +29,17 @@ uv run vacancy-microservice
 
 ## Database migrations (Alembic)
 
-Migrations live in **`backend/_common/db_models_and_migrations`**. They use the same **`backend/_common/.env`** for `DATABASE_URL` (sync driver is applied in Alembic).
+Migrations live in **`backend/_common/db`**. They use the same **`backend/_common/.env`** for `DATABASE_URL` (sync driver is applied in Alembic).
 
 ```bash
-cd ../_common/db_models_and_migrations
+cd ../_common/db
 alembic upgrade head
 ```
 
 Create a new revision after model changes:
 
 ```bash
-cd ../_common/db_models_and_migrations
+cd ../_common/db
 alembic revision --autogenerate -m "describe change"
 alembic upgrade head
 ```

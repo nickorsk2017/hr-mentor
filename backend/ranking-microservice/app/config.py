@@ -35,7 +35,7 @@ class Settings(BaseSettings):
 
     # Groq — used for CV-vacancy ranking chat model
     groq_api_key: str = ""
-    groq_chat_model: str = "llama-3.1-8b-instant"
+    groq_chat_model: str = "meta-llama/llama-4-scout-17b-16e-instruct"
 
 
 settings = Settings()

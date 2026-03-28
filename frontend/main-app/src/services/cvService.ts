@@ -13,14 +13,14 @@ export function getOrCreateUserId(): string {
   return created;
 }
 
-export type CvBackendRecord = {
+export type CVResponse = {
   id: string;
   user_id: string;
   cv_text: string;
   created_at: string;
 };
 
-export async function saveCvToBackend(cvText: string): Promise<CvBackendRecord> {
+export async function saveCV(cvText: string): Promise<CVResponse> {
   const userId = getOrCreateUserId();
   const res = await fetch(`${API_URL}/cvs`, {
     method: "PUT",
@@ -32,14 +32,14 @@ export async function saveCvToBackend(cvText: string): Promise<CvBackendRecord> 
     throw new Error(`Save CV failed (${res.status})`);
   }
 
-  const data = (await res.json()) as CvBackendRecord;
+  const data = (await res.json()) as CVResponse;
   if (typeof window !== "undefined") {
     window.localStorage.setItem(CV_ID_KEY, data.id);
   }
   return data;
 }
 
-export async function getLastSavedCvFromBackend(): Promise<CvBackendRecord | null> {
+export async function getCV(): Promise<CVResponse | null> {
   if (typeof window === "undefined") return null;
   const cvId = window.localStorage.getItem(CV_ID_KEY);
   if (!cvId) return null;
@@ -49,6 +49,6 @@ export async function getLastSavedCvFromBackend(): Promise<CvBackendRecord | nul
   if (!res.ok) {
     throw new Error(`Load CV failed (${res.status})`);
   }
-  return (await res.json()) as CvBackendRecord;
+  return (await res.json()) as CVResponse;
 }
 

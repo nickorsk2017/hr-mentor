@@ -6,7 +6,7 @@ import uuid
 from sqlalchemy import DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from db_models_and_migrations.base import Base
+from db.base import Base
 
 
 class CV(Base):
