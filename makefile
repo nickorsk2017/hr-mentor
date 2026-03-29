@@ -1,8 +1,10 @@
 .PHONY: venv install-backend-deps install-frontend-deps install-deps start-backend-microservices start-frontend
 
 VENV=.venv
+REPO_ROOT := $(shell cd "$(dir $(lastword $(MAKEFILE_LIST)))" && pwd)
 PYTHON=$(VENV)/bin/python
 PIP=$(VENV)/bin/pip
+UV=$(REPO_ROOT)/$(VENV)/bin/uv
 
 venv:
 	python3 -m venv $(VENV)
@@ -10,11 +12,11 @@ venv:
 
 install-backend-deps: venv
 	$(PIP) install "uvicorn[standard]" gunicorn uvicorn-worker uv
-	cd ./backend/gateway && uv install
-	cd ./backend/cv-microservice && uv install
-	cd ./backend/rag-index-microservice && uv install
-	cd ./backend/ranking-microservice && uv install
-	cd ./backend/vacancy-microservice && uv install
+	cd ./backend/gateway && $(UV) sync
+	cd ./backend/cv-microservice && $(UV) sync
+	cd ./backend/rag-index-microservice && $(UV) sync
+	cd ./backend/ranking-microservice && $(UV) sync
+	cd ./backend/vacancy-microservice && $(UV) sync
 
 # Ubuntu: install Node.js (NodeSource LTS) and latest pnpm, then project deps. No OS detection.
 install-frontend-deps:
