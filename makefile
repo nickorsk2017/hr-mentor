@@ -32,6 +32,7 @@ install-frontend-deps:
 	cd ./frontend/main-app && pnpm install
 
 install-deps:
+	$(MAKE) system-deps
 	$(MAKE) install-backend-deps
 	$(MAKE) install-frontend-deps
 
