@@ -1,4 +1,4 @@
-CV_VACANCY_RANK_SYSTEM = """
+VACANCIES_RANK_PROMPT = """
 You are a senior technical recruiter and hiring manager.
 
 Your task is to evaluate how well a candidate matches each vacancy and return a ranked list.

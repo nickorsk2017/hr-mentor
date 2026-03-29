@@ -3,14 +3,10 @@ from __future__ import annotations
 import asyncio
 import json
 from dataclasses import dataclass, field
-from app.models import CVModel
-from app.db.session import SessionLocal
 from uuid import UUID
 from typing import Any
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_groq import ChatGroq
-from langchain_openai import ChatOpenAI
-from sqlalchemy import select
 
 from app.schemas.postgres_vacancy import (
     Vacancy as VacancyResponse,
@@ -19,14 +15,15 @@ from app.schemas.postgres_vacancy import (
 
 from app.config import settings
 from app.prompts.ranking_prompt import (
-    CV_VACANCY_RANK_SYSTEM,
+    VACANCIES_RANK_PROMPT,
     CV_VACANCY_RANK_USER_TEMPLATE,
 )
-from app.schemas import RankingResponse
+from app.schemas import RankingResponse, VacancyFromIndex
 from app.utils import strip_html_to_text
 
 from app.services.vector_store_service import (
-    list_user_vacancies_from_pinecone,
+    get_cv_profile_text_from_pinecone,
+    get_index_vacancies_from_pinecone,
     unknown_listing_created_at,
 )
 
@@ -83,9 +80,9 @@ def _get_ranking_data_llm(cv_text: str, vacancies_from_index: list[VacancyFromIn
     if not settings.groq_api_key:
         raise RuntimeError("GROQ_API_KEY is not set")
 
-    llm = ChatOpenAI(
-        model="gpt-4o-mini",
-        api_key=settings.openai_api_key,
+    llm = ChatGroq(
+        model=settings.groq_chat_model,
+        api_key=settings.groq_api_key,
         temperature=0,
         response_format={"type": "json_object"},
     )
@@ -99,15 +96,19 @@ def _get_ranking_data_llm(cv_text: str, vacancies_from_index: list[VacancyFromIn
         vacancy_blocks=blocks,
     )
 
+    print('--------------------------------')
+    print(VACANCIES_RANK_PROMPT)
+    print(cv_and_vacancies_list_prompt)
+    print('--------------------------------')
+
     raw = llm.invoke(
         [
-            SystemMessage(content=CV_VACANCY_RANK_SYSTEM),
+            SystemMessage(content=VACANCIES_RANK_PROMPT),
             HumanMessage(content=cv_and_vacancies_list_prompt),
         ]
     )
 
     data = json.loads(raw.content)
-    print(data, 'data')
     return RankingResponse.model_validate(data)
 
 
@@ -167,27 +168,18 @@ async def rank_vacancies_by_cv(
 
     result_llm = await asyncio.to_thread(_get_ranking_data_llm, cv_text, vacancies_from_index)
     if result_llm is None:
-        raise RuntimeError("OpenAI ranking returned empty result")
+        raise RuntimeError("Ranking returned empty result")
 
     merged = _merge_ranking(vacancies_from_index, result_llm)
     return merged
 
 
 async def get_vacancies_by_user_id(user_id: UUID) -> VacanciesByUserResponse:
-    async with SessionLocal() as db:
-        cv_result = await db.execute(
-            select(CVModel)
-            .where(CVModel.user_id == user_id)
-            .order_by(CVModel.created_at.desc())
-            .limit(1)
-        )
-    cv_row = cv_result.scalar_one_or_none()
-    cv_text = cv_row.cv_text or None
-    if cv_text is None:
+    cv_text = await get_cv_profile_text_from_pinecone(user_id)
+    if not cv_text:
         return VacanciesByUserResponse(vacancies=[])
-
-    cv_text = cv_text.strip();
-    pinecone_rows = await list_user_vacancies_from_pinecone(user_id, cv_text=cv_text)
+        
+    pinecone_rows = await get_index_vacancies_from_pinecone(user_id, cv_text=cv_text)
     vacancies_from_index = [row.vacancy for row in pinecone_rows]
 
     if not vacancies_from_index:

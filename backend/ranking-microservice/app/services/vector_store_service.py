@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-import asyncio
 import json
 import math
-import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any
+from app.prompts.cv_prompt import CV_RANK
+import uuid
+import asyncio
 
 from langchain_openai import OpenAIEmbeddings
 from pinecone import Pinecone
@@ -125,7 +126,71 @@ def _query_user_vacancies(user_id: str, cv_text: str) -> list[VacancyVectorSearc
     return result
 
 
-async def list_user_vacancies_from_pinecone(
+def _cv_vector_id(user_id: str) -> str:
+    return f"cv:{user_id.strip()}"
+
+
+def _normalize_skills_from_metadata(raw: Any) -> list[str]:
+    if raw is None:
+        return []
+    if isinstance(raw, list):
+        return [str(s).strip() for s in raw if s is not None and str(s).strip()]
+    if isinstance(raw, str) and raw.strip():
+        try:
+            parsed = json.loads(raw)
+            if isinstance(parsed, list):
+                return [str(s).strip() for s in parsed if str(s).strip()]
+        except json.JSONDecodeError:
+            pass
+        return [raw.strip()]
+    return []
+
+
+def format_cv_index_metadata_as_text(metadata: dict[str, Any]) -> str:
+    """Build ranking / embedding text from Pinecone CV upsert metadata (summary, skills, years)."""
+    summary = str(metadata.get("summary") or "").strip()
+    skills = _normalize_skills_from_metadata(metadata.get("skills"))
+    years = metadata.get("years_expereance")
+    if years is None:
+        years = metadata.get("years_experience")
+
+    skills_str = ", ".join(skills)
+    return CV_RANK.format(summary=summary, skills=skills_str, years_experience=years)
+
+
+def _fetch_cv_index_metadata_sync(user_id: str) -> dict[str, Any] | None:
+    if not settings.pinecone_api_key or not settings.pinecone_index:
+        return None
+    uid = user_id.strip()
+    if not uid:
+        return None
+
+    vid = _cv_vector_id(uid)
+    pc = Pinecone(api_key=settings.pinecone_api_key)
+    index = pc.Index(settings.pinecone_index)
+    res = index.fetch(ids=[vid], namespace=settings.pinecone_cv_namespace)
+
+    vectors = getattr(res, "vectors", None) or {}
+    rec = vectors.get(vid)
+
+    if rec is None:
+        return None
+    md = getattr(rec, "metadata", None)
+    if not md:
+        return None
+    return dict(md)
+
+
+async def get_cv_profile_text_from_pinecone(user_id: uuid.UUID) -> str | None:
+    """Load indexed CV for user from Pinecone (``cv:{user_id}`` in CV namespace); return formatted text."""
+    meta_data = await asyncio.to_thread(_fetch_cv_index_metadata_sync, str(user_id))
+    if not meta_data:
+        return None
+    text = format_cv_index_metadata_as_text(meta_data)
+    return text
+
+
+async def get_index_vacancies_from_pinecone(
     user_id: uuid.UUID,
     cv_text: str,
 ) -> list[VacancyVectorSearchRow]:

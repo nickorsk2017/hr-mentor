@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     # Pinecone
     pinecone_api_key: str = ""
     pinecone_index: str = ""
+    pinecone_cv_namespace: str = "cvs"
     # Max vectors returned per user for GET /v1/vacancies (semantic query + metadata filter)
     pinecone_user_vacancies_top_k: int = 2000
 
