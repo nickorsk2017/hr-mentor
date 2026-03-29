@@ -89,7 +89,7 @@ export function VacancyCard({
                       }
                     >
                       <option value="scheduled">Scheduled</option>
-                      <option value="done">Done (success)</option>
+                      <option value="done">Done</option>
                       <option value="failed">Failed</option>
                     </select>
                     <Button
@@ -130,7 +130,7 @@ export function VacancyCard({
 
   const buttonsJSX = useMemo(() => {
     return (
-      <div onMouseUp={(e) => e.stopPropagation()} className="absolute right-4 top-[40px] z-40 flex items-center gap-2">
+      <div onMouseUp={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()} className="absolute right-4 top-[40px] z-40 flex items-center gap-2">
         <Button
           type="button"
           size="small"

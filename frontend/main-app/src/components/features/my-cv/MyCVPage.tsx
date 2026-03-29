@@ -91,11 +91,7 @@ export default function MyCVPage() {
       <Header
         title="My CV"
       />
-      <RichEditor valueHtml={draftHtml} onChangeHtml={handleChangeHtml} classToolbar="!top-[64px]" />
-      <p className="text-[11px] text-zinc-500">
-        Tip: Include key skills, technologies, and achievements. The ranking
-        engine uses this text to compare with vacancies.
-      </p>
+      <RichEditor autoFocus  valueHtml={draftHtml} onChangeHtml={handleChangeHtml} classToolbar="!top-[64px]" />
   </Container>
   );
 }

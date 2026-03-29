@@ -114,7 +114,7 @@ export default function Home() {
             1. Paste your CV
           </h2>
           <p className="text-xl leading-relaxed text-zinc-600">
-            Paste your CV in a rich editor
+            Paste your CV in the rich editor
           </p>
         </Link>
 

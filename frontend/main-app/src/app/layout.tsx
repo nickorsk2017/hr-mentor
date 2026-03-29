@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
+import { AuthorWelcomeModal } from "@/components/layout/AuthorWelcomeModal";
 import { SidebarNav } from "@/components/layout/SidebarNav";
 import "./globals.css";
 
@@ -26,8 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${geistMono.variable} antialiased text-zinc-900 relative`}
+        className={`${inter.className} ${inter.variable} ${geistMono.variable} antialiased text-zinc-900 relative`}
       >
+        <AuthorWelcomeModal />
         <div className="min-h-screen flex items-start px-3 py-3 text-sm text-zinc-800 md:px-4 md:py-4 max-w-7xl mx-auto">
             <SidebarNav />
             {/* Main content area */}
