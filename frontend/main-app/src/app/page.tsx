@@ -1,88 +1,12 @@
 import { Container } from "@/components/layout/Container";
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
-
-function IconBadge({
-  children,
-  className = "bg-violet-100 text-violet-700",
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div
-      className={`mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl ${className}`}
-    >
-      {children}
-    </div>
-  );
-}
-
-function FileTextIcon({ className = "text-violet-700" }: { className?: string }) {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-5-5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M14 2v5h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9 12h6M9 16h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function BriefcaseIcon({ className = "text-violet-700" }: { className?: string }) {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="2" />
-      <path d="M3 12h18" stroke="currentColor" strokeWidth="2" />
-      <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  );
-}
-
-function RankingAdviceIcon({ className = "text-violet-700" }: { className?: string }) {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <path
-        d="M4 16L10 10L14 14L20 8"
-        stroke="currentColor"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M14.5 8H20V13.5"
-        stroke="currentColor"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+import {
+  BriefcaseIcon,
+  FileTextIcon,
+  IconBadge,
+  RankingAdviceIcon,
+} from "@/components/common/icons";
 
 export default function Home() {
   return (
@@ -127,8 +51,8 @@ export default function Home() {
           Problem and solution
         </h2>
         <div className="flex flex-col gap-4 rounded-3xl border border-rose-200/80 bg-gradient-to-br from-rose-50/90 to-white p-6 shadow-sm">
-          <div className="flex items-center gap-4">
-            <Image src="/icon-problem.png" alt="Problem" width={150} height={150} />
+          <div className="flex items-center gap-4 h-[150px]">
+            <Image src="/icon-problem.png" alt="Problem" width={150} height={150} className="w-[150px] h-auto" />
             <h3 className="text-4xl font-semibold text-zinc-900">Problem</h3>
           </div>
           <p className="text-xl font-medium leading-relaxed text-zinc-800">
@@ -142,8 +66,8 @@ export default function Home() {
           </p>
         </div>
         <div className="flex flex-col gap-5 rounded-3xl border border-violet-200/80 bg-gradient-to-br from-violet-50/90 to-white p-6 shadow-sm">
-          <div className="flex items-center gap-6">
-            <Image src="/icon-robot.png" alt="Solution" width={150} height={150} />
+          <div className="flex items-center gap-6 h-[150px]">
+            <Image src="/icon-robot.png" alt="Solution" width={150} height={150}  className="w-[150px] h-auto" />
             <h3 className="text-4xl font-semibold text-zinc-900">Solution</h3>
           </div>
           <p className="text-xl font-medium leading-relaxed text-zinc-800">

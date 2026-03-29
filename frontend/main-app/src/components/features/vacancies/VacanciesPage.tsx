@@ -81,7 +81,7 @@ export function VacanciesPage() {
     const newStage: Entity.VacancyStage = {
       id: crypto.randomUUID(),
       name: !stages.length ? "HR Interview" : "",
-      status: "pending",
+      status: "scheduled",
       notes: "",
     };
 

@@ -35,7 +35,7 @@ export const RichEditor = React.forwardRef<RichEditorHandle, RichEditorProps>(fu
     editorProps: {
       attributes: {
         class:
-          "min-h-[260px] p-3 text-lg leading-relaxed text-zinc-800 outline-none focus:ring-2 focus:ring-zinc-900/5",
+          "min-h-[260px] p-3 text-lg leading-relaxed text-zinc-800 outline-none focus:ring-2 focus:ring-zinc-900/5 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-2 [&_li]:my-1 [&_h2]:text-[30px] [&_h2]:leading-[38px] [&_h2]:font-semibold [&_h2]:my-2",
       },
     },
     immediatelyRender: false,
@@ -79,7 +79,7 @@ export const RichEditor = React.forwardRef<RichEditorHandle, RichEditorProps>(fu
   return (
     <div
       onClick={onMouseUp}
-      className={`cursor-text  height-auto border border-zinc-200 bg-white border-t-0 ${
+      className={`cursor-text height-auto border border-zinc-200 bg-white border-t-0 ${
         className ?? ""
       }`}
     >

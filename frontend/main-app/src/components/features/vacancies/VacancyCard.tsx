@@ -88,7 +88,7 @@ export function VacancyCard({
                         })
                       }
                     >
-                      <option value="pending">Pending</option>
+                      <option value="scheduled">Scheduled</option>
                       <option value="done">Done (success)</option>
                       <option value="failed">Failed</option>
                     </select>

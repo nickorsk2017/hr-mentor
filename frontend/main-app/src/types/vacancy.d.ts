@@ -1,6 +1,6 @@
 namespace Entity {
 
-    type StageStatus = "pending" | "done" | "failed";
+    type StageStatus = "scheduled" | "done" | "failed";
 
     type VacancyStage = {
         id: string;
