@@ -10,7 +10,7 @@ import {
 
 export default function Home() {
   return (
-    <Container className="flex w-full flex-col gap-8 pb-8">
+    <Container className="flex w-full flex-col gap-8 pb-8 mt-15 md:mt-0">
       <section className="grid items-center gap-6 rounded-3xl border border-zinc-200 bg-gradient-to-br from-violet-40 to-white p-6 shadow-sm lg:grid-cols-[1.1fr_1fr] mb-8">
         <div className="flex flex-col gap-4">
           <h1 className="max-w-xl text-5xl font-semibold leading-tight text-zinc-900">
@@ -61,7 +61,7 @@ export default function Home() {
           <p className="text-xl leading-relaxed text-zinc-600">
             Candidates spend hours scrolling through irrelevant vacancies,
             guessing which roles actually fit their skills. Most platforms rely
-            on basic keyword matching—ignoring real experience, seniority, and
+            on basic keyword ranking—ignoring real experience, seniority, and
             context.
           </p>
         </div>

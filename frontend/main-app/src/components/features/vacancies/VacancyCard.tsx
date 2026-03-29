@@ -146,10 +146,7 @@ export function VacancyCard({
         <Button
           type="button"
           size="small"
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggle()
-          }}
+          onMouseDown={(e) =>  {onToggle(); e.stopPropagation()}}
         >
         {isActive ? (
           // Up chevron

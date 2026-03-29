@@ -179,7 +179,7 @@ export function VacanciesPage() {
   };
 
   return (
-    <Container className="flex w-full flex-colgap-4">
+    <Container className="flex w-full flex-colgap-4 mt-10 md:mt-0">
     <Header
       title="Vacancies"
       actionLabel="Add Vacancy"

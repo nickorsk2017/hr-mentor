@@ -1,12 +1,15 @@
 "use client";
 
+import type { ReactNode } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSwipeable } from "react-swipeable";
 
 type NavItem = {
   href: string;
   label: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
 };
 
 const items: NavItem[] = [
@@ -68,40 +71,102 @@ const items: NavItem[] = [
 
 export function SidebarNav() {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const swipeHandlers = useSwipeable({
+    onSwipedRight: () => setMobileOpen(true),
+    onSwipedLeft: () => setMobileOpen(false),
+    delta: 35,
+    trackTouch: true,
+    preventScrollOnSwipe: false,
+  });
+
+  const renderLinks = (onNavigate?: () => void) => (
+    <nav className="flex flex-col gap-1.5">
+      {items.map((item) => {
+        const active = pathname === item.href;
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onNavigate}
+            className={`relative flex items-center gap-2.5 rounded-xl px-3 py-2 text-base font-medium transition ${
+              active
+                ? "bg-white/55 text-[#5f41d5]"
+                : "text-zinc-700 hover:bg-white/45 hover:text-zinc-900"
+            }`}
+          >
+            {active && (
+              <span className="absolute -left-2 top-2 bottom-2 w-1 rounded-full bg-[#7f59ff]" />
+            )}
+            <span className={active ? "text-[#5f41d5]" : "text-zinc-500"}>{item.icon}</span>
+            <span>{item.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
 
   return (
-    <aside className="sticky top-4 mr-4 flex h-[calc(100vh-2rem)] w-60 flex-col rounded-[26px] border border-[#e7e6f5] bg-[#f1f4fa] p-4 shadow-[0_2px_10px_rgba(19,17,56,0.05)]">
-      <div className="mb-3 flex items-center gap-1.5 px-1 text-base">
-        <span className="font-semibold text-[#5f41d5]">AI</span>
-        <span className="font-semibold text-zinc-800">Carrier</span>
-        <span className="font-medium text-zinc-500">Mentor</span>
+    <>
+      <div className="fixed z-70 top-[18px] left-4 mb-3 flex items-center justify-between md:hidden">
+        <button
+          type="button"
+          aria-label="Open menu"
+          onClick={() => setMobileOpen(true)}
+          className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 shadow-sm"
+        >
+          <span aria-hidden="true">☰</span>
+          <span>Menu</span>
+        </button>
       </div>
 
-      <div className="mb-3 border-t border-[#e3e2ef]" />
+      <aside className="sticky top-4 mr-4 hidden h-[calc(100vh-2rem)] w-60 flex-col rounded-[26px] border border-[#e7e6f5] bg-[#f1f4fa] p-4 shadow-[0_2px_10px_rgba(19,17,56,0.05)] md:flex">
+        <div className="mb-3 flex items-center gap-1.5 px-1 text-base">
+          <span className="font-semibold text-[#5f41d5]">AI</span>
+          <span className="font-semibold text-zinc-800">Carrier</span>
+          <span className="font-medium text-zinc-500">Mentor</span>
+        </div>
 
-      <nav className="flex flex-col gap-1.5">
-        {items.map((item) => {
-          const active = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`relative flex items-center gap-2.5 rounded-xl px-3 py-2 text-base font-medium transition ${
-                active
-                  ? "bg-white/55 text-[#5f41d5]"
-                  : "text-zinc-700 hover:bg-white/45 hover:text-zinc-900"
-              }`}
-            >
-              {active && (
-                <span className="absolute -left-2 top-2 bottom-2 w-1 rounded-full bg-[#7f59ff]" />
-              )}
-              <span className={active ? "text-[#5f41d5]" : "text-zinc-500"}>{item.icon}</span>
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
-    </aside>
+        <div className="mb-3 border-t border-[#e3e2ef]" />
+        {renderLinks()}
+      </aside>
+
+      {mobileOpen && (
+        <div className="fixed inset-0 z-70 md:hidden">
+          <button
+            type="button"
+            aria-label="Close menu backdrop"
+            onClick={() => setMobileOpen(false)}
+            className="absolute inset-0 bg-black/35"
+          />
+
+          <aside
+            {...swipeHandlers}
+            className="relative flex h-full w-[88vw] max-w-[320px] flex-col border border-[#e7e6f5] bg-[#f1f4fa] p-4 shadow-[0_2px_10px_rgba(19,17,56,0.05)]"
+          >
+            <div className="mb-3 flex items-center justify-between gap-2 px-1 text-base">
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-[#5f41d5]">AI</span>
+                <span className="font-semibold text-zinc-800">Carrier</span>
+                <span className="font-medium text-zinc-500">Mentor</span>
+              </div>
+              <button
+                type="button"
+                aria-label="Close menu"
+                onClick={() => setMobileOpen(false)}
+                className="rounded-lg px-2 py-1 text-zinc-600 hover:bg-white/60"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mb-3 border-t border-[#e3e2ef]" />
+            {renderLinks(() => setMobileOpen(false))}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }
 

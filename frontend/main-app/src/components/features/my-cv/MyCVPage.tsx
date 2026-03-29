@@ -62,7 +62,7 @@ export default function MyCVPage() {
 
     timeLoadingRef.current = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
 
     setCv({
       contentHtml: draftHtml,
@@ -87,7 +87,7 @@ export default function MyCVPage() {
   };
 
   return (
-    <Container className="flex w-full flex-col gap-4">
+    <Container className="flex w-full flex-col gap-4 mt-10 md:mt-0">
       <Header
         title="My CV"
       />

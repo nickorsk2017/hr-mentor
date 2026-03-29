@@ -28,11 +28,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${geistMono.variable} antialiased text-zinc-900 relative`}
       >
-        <div className="min-h-screen flex items-start px-4 py-4 text-sm text-zinc-800">
+        <div className="min-h-screen flex items-start px-3 py-3 text-sm text-zinc-800 md:px-4 md:py-4 max-w-7xl mx-auto">
             <SidebarNav />
             {/* Main content area */}
-            <main className="flex-1">
-              <div className="mx-auto px-6 py-4 relative">{children}</div>
+            <main className="flex-1 w-full">
+              <div className="mx-auto px-2 py-2 relative md:px-6 md:py-4">
+                {children}
+              </div>
             </main>
         </div>
       </body>
