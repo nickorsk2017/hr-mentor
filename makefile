@@ -1,7 +1,15 @@
-.PHONY: install-backend-deps install-frontend-deps install-deps start-backend-microservices start-frontend
+.PHONY: venv install-backend-deps install-frontend-deps install-deps start-backend-microservices start-frontend
 
-install-backend-deps:
-	pip install "uvicorn[standard]" gunicorn uvicorn-worker
+VENV=.venv
+PYTHON=$(VENV)/bin/python
+PIP=$(VENV)/bin/pip
+
+venv:
+	python3 -m venv $(VENV)
+	$(PIP) install --upgrade pip
+
+install-backend-deps: venv
+	$(PIP) install "uvicorn[standard]" gunicorn uvicorn-worker
 	cd ./backend/gateway && uv install
 	cd ./backend/cv-microservice && uv install
 	cd ./backend/rag-index-microservice && uv install
@@ -22,13 +30,12 @@ install-deps:
 	$(MAKE) install-frontend-deps
 
 start-backend-microservices:
-	(cd backend/gateway && gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8001) & \
-	(cd backend/cv-microservice && gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8002) & \
-	(cd backend/rag-index-microservice && gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8003) & \
-	(cd backend/ranking-microservice && gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8004) & \
-	(cd backend/vacancy-microservice && gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8005) & \
+	(cd backend/gateway && $(VENV)/bin/gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8001) & \
+	(cd backend/cv-microservice && $(VENV)/bin/gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8002) & \
+	(cd backend/rag-index-microservice && $(VENV)/bin/gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8003) & \
+	(cd backend/ranking-microservice && $(VENV)/bin/gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8004) & \
+	(cd backend/vacancy-microservice && $(VENV)/bin/gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8005) & \
 	wait
 
 start-frontend:
 	cd ./frontend/main-app && pnpm build && pm2 start npm --name "nextjs-ai-mentor-app" -- run start
-
