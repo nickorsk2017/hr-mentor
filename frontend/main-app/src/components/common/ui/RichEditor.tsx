@@ -3,6 +3,7 @@
 import React, { useEffect, useImperativeHandle } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { Placeholder } from "@tiptap/extensions";
 import { Button } from "./Button";
 import type { Size } from "./Button";
 
@@ -14,6 +15,7 @@ type RichEditorProps = {
   size?: Size;
   classToolbar?: string;
   onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  placeholder?: string;
 };
 
 export type RichEditorHandle = {
@@ -28,9 +30,10 @@ export const RichEditor = React.forwardRef<RichEditorHandle, RichEditorProps>(fu
   size = "medium",
   classToolbar,
   onMouseUp,
+  placeholder,
 }, ref) {
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, Placeholder.configure({ placeholder: placeholder ?? "" })],
     content: valueHtml || "<p></p>",
     editorProps: {
       attributes: {
@@ -153,7 +156,7 @@ export const RichEditor = React.forwardRef<RichEditorHandle, RichEditorProps>(fu
         </Button>
       </div>
 
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor}/>
     </div>
   );
 });

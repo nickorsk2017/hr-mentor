@@ -234,6 +234,7 @@ export function VacancyCard({
             className="max-h-auto mt-2 w-full"
             classToolbar="!top-[158px]"
             valueHtml={vacancy.description}
+            placeholder="Vacancy description"
             onChangeHtml={(next) =>
               onUpdateVacancy({
                 description: next,

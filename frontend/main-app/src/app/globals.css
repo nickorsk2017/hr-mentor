@@ -25,3 +25,18 @@ body {
   color: var(--foreground);
   font-size: calc(var(--base-font-size) * 1.2);
 }
+
+/* TipTap Placeholder (@tiptap/extensions): decorations set data-placeholder + .is-empty; needs ::before to paint text */
+.ProseMirror .is-empty::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: #a1a1aa;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ProseMirror .is-empty::before {
+    color: #71717a;
+  }
+}

@@ -91,7 +91,7 @@ export default function MyCVPage() {
       <Header
         title="My CV"
       />
-      <RichEditor autoFocus  valueHtml={draftHtml} onChangeHtml={handleChangeHtml} classToolbar="!top-[64px]" />
+      <RichEditor autoFocus placeholder="Paste your CV here..."  valueHtml={draftHtml} onChangeHtml={handleChangeHtml} classToolbar="!top-[64px]" />
   </Container>
   );
 }
