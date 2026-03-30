@@ -13,6 +13,8 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+    print(_COMMON_ENV)
+    print("--------------------------------")
 
     app_name: str = "cv-microservice"
     port: int = 8002
