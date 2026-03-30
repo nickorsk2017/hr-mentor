@@ -56,6 +56,23 @@ def _upsert_vacancy_to_vector_db(vectors: list[dict[str, Any]]) -> None:
         raise
 
 
+def _sanitize_metadata_value(value: Any) -> str | int | float | bool | list[str]:
+    """Pinecone metadata supports scalar values and list[str], never null."""
+    if value is None:
+        return ""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float, str)):
+        return value
+    if isinstance(value, list):
+        return [str(v) for v in value if v is not None]
+    return str(value)
+
+
+def _sanitize_metadata(md: dict[str, Any]) -> dict[str, str | int | float | bool | list[str]]:
+    return {k: _sanitize_metadata_value(v) for k, v in md.items()}
+
+
 def _delete_vacancy_from_index(vacancy_id: str) -> None:
     if not settings.pinecone_api_key or not settings.pinecone_index:
         raise RuntimeError("PINECONE_API_KEY and pinecone_index must be set")
@@ -82,10 +99,11 @@ async def add_vacancy_to_index(req: VacancyIndexPayload) -> VacancyIndexResponse
         "kind": "vacancy",
         "user_id": req.user_id,
         "vacancy_id": req.vacancy_id,
-        "company": req.company,
+        "company": (req.company or "").strip(),
         "summary": summary,
         **extracted_vacancy_data,
     }
+    metadata = _sanitize_metadata(metadata)
 
     await asyncio.to_thread(
         _upsert_vacancy_to_vector_db,

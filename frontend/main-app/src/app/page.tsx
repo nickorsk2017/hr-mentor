@@ -13,10 +13,10 @@ export default function Home() {
     <Container className="flex w-full flex-col gap-8 pb-8 mt-15 md:mt-0">
       <section className="grid items-center gap-6 rounded-3xl border border-zinc-200 bg-gradient-to-br from-violet-40 to-white p-6 shadow-sm lg:grid-cols-[1.1fr_1fr] mb-8">
         <div className="flex flex-col gap-4">
-          <h1 className="max-w-xl text-5xl font-semibold leading-tight text-zinc-900">
+          <h1 className="max-w-xl text-3xl md:text-5xl font-semibold leading-tight text-zinc-900">
             AI Carrier Mentor for your career growth
           </h1>
-          <p className="max-w-xl text-2xl leading-relaxed text-zinc-600">
+          <p className="max-w-xl text-xl md:text-2xl leading-relaxed text-zinc-600">
             Paste your CV, track vacancies and interview stages, and let an AI
             mentor rank opportunities and suggest technologies to grow into
             your next role.
@@ -52,8 +52,8 @@ export default function Home() {
         </h2>
         <div className="flex flex-col gap-4 rounded-3xl border border-rose-200/80 bg-gradient-to-br from-rose-50/90 to-white p-6 shadow-sm">
           <div className="flex items-center gap-4 h-[150px]">
-            <Image src="/icon-problem.png" alt="Problem" width={150} height={150} className="w-[150px] h-auto" />
-            <h3 className="text-4xl font-semibold text-zinc-900">Problem</h3>
+            <Image src="/icon-problem.png" alt="Problem" width={100} height={100} className="w-[120px] md:w-[150px] h-auto" />
+            <h3 className="text-2xl md:text-4xl font-semibold text-zinc-900">Problem</h3>
           </div>
           <p className="text-xl font-medium leading-relaxed text-zinc-800">
             Finding the right job is overwhelming.
@@ -67,8 +67,8 @@ export default function Home() {
         </div>
         <div className="flex flex-col gap-5 rounded-3xl border border-violet-200/80 bg-gradient-to-br from-violet-50/90 to-white p-6 shadow-sm">
           <div className="flex items-center gap-6 h-[150px]">
-            <Image src="/icon-robot.png" alt="Solution" width={150} height={150}  className="w-[150px] h-auto" />
-            <h3 className="text-4xl font-semibold text-zinc-900">Solution</h3>
+            <Image src="/icon-robot.png" alt="Solution" width={150} height={150}  className="w-[120px] md:w-[150px] h-auto" />
+            <h3 className="text-2xl md:text-4xl font-semibold text-zinc-900">Solution</h3>
           </div>
           <p className="text-xl font-medium leading-relaxed text-zinc-800">
             We do the thinking for you.

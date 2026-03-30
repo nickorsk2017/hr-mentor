@@ -183,6 +183,7 @@ export function VacanciesPage() {
     <Header
       title="Vacancies"
       actionLabel="Add Vacancy"
+      actionLabelMobile="+"
       onActionClick={handleAddVacancy}
     />
 
