@@ -65,7 +65,7 @@ export default function MyCVPage() {
       setIsLoading(true);
       await saveCV(html);
       setIsLoading(false);
-    }, 1800);
+    }, 2500;
 
     setCv({
       contentHtml: html,
