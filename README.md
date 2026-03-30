@@ -30,13 +30,13 @@ ai-hr-agent/
 
 ## Main Docs
 
-- Backend overview: `backend/README.md`
-- Frontend overview: `frontend/main-app/README.md`
-- Gateway details: `backend/gateway/README.md`
-- CV service: `backend/cv-microservice/README.md`
-- Vacancy service: `backend/vacancy-microservice/README.md`
-- RAG index service: `backend/rag-index-microservice/README.md`
-- Ranking service: `backend/ranking-microservice/README.md`
+- Backend overview: [`backend/README.md`](backend/README.md)
+- Frontend overview: [`frontend/main-app/README.md`](frontend/main-app/README.md)
+- Gateway details: [`backend/gateway/README.md`](backend/gateway/README.md)
+- CV service: [`backend/cv-microservice/README.md`](backend/cv-microservice/README.md)
+- Vacancy service: [`backend/vacancy-microservice/README.md`](backend/vacancy-microservice/README.md)
+- RAG index service: [`backend/rag-index-microservice/README.md`](backend/rag-index-microservice/README.md)
+- Ranking service: [`backend/ranking-microservice/README.md`](backend/ranking-microservice/README.md)
 
 ## Shared Environment
 
@@ -49,18 +49,3 @@ Frontend uses:
 
 - `frontend/main-app/.env`
 - template config: `frontend/main-app/.env.example`
-
-## Quick Start
-
-```bash
-# from project root
-make install-deps
-make start-backend-microservices
-```
-
-In another terminal:
-
-```bash
-cd frontend/main-app
-pnpm dev
-```
