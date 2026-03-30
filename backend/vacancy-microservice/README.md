@@ -1,62 +1,32 @@
-# vacancy-microservice
+# Vacancy Microservice
 
-FastAPI service for vacancy CRUD and interview-stage tracking.
+## What Is This For
+- Manages vacancy entities in PostgreSQL.
+- Supports create, update, list, and delete flows.
+- Persists stage planning/tracking fields for each vacancy.
 
-## Endpoints
-
-- `GET /health` – health check
-- `POST /vacancies` – create vacancy
-- `PUT /vacancies/{vacancy_id}` – update vacancy
-- `GET /vacancies?user_id=<uuid>` – list user vacancies
-- `DELETE /vacancies/{vacancy_id}?user_id=<uuid>` – delete vacancy
-
-## Run locally
-
-Configuration is read from **`backend/_common/.env`** (shared with other backend services):
-
-```bash
-cp ../_common/.env.example ../_common/.env
-# edit ../_common/.env — set DATABASE_URL, PORT (optional), etc.
+## Folder Structure
+```text
+vacancy-microservice/
+├── app/
+│   ├── api/
+│   │   └── routes.py            # Vacancy HTTP endpoints
+│   ├── db/
+│   │   └── session.py           # Async SQLAlchemy engine/session
+│   ├── schemas/
+│   │   └── vacancy.py           # Local vacancy schema exports
+│   ├── services/
+│   │   └── vacancy_service.py   # Vacancy business logic
+│   ├── config.py                # Env-based settings
+│   └── main.py                  # FastAPI app + startup checks
+├── vacancy_runner.py            # Console-script bootstrap
+├── pyproject.toml               # Dependencies and scripts
+└── uv.lock                      # uv lockfile
 ```
 
-Then:
-
+## Run
 ```bash
+cd backend/vacancy-microservice
 uv sync
 uv run vacancy-microservice
-# or: uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-## Database migrations (Alembic)
-
-Migrations live in **`backend/_common/db`**. They use the same **`backend/_common/.env`** for `DATABASE_URL` (sync driver is applied in Alembic).
-
-```bash
-cd ../_common/db
-alembic upgrade head
-```
-
-Create a new revision after model changes:
-
-```bash
-cd ../_common/db
-alembic revision --autogenerate -m "describe change"
-alembic upgrade head
-```
-
-## Notes
-
-- Startup checks that PostgreSQL is reachable; schema comes from Alembic.
-
-## Create vacancy request body
-
-```json
-{
-  "user_id": "00000000-0000-0000-0000-000000000000",
-  "title": "Senior Backend Engineer",
-  "company": "Acme Corp",
-  "description": "Role details",
-  "planned_stages": 3,
-  "stages": []
-}
 ```

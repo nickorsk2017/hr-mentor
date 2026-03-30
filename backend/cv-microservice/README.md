@@ -1,19 +1,33 @@
-# cv-microservice
+# CV Microservice
 
-FastAPI service for storing CVs.
+## What Is This For
+- Stores and returns user CV records in PostgreSQL.
+- Provides CV CRUD endpoints used by the gateway.
+- Includes a DB connectivity test command for local debugging.
 
-## Endpoints
+## Folder Structure
+```text
+cv-microservice/
+├── app/
+│   ├── api/
+│   │   └── routes.py            # CV HTTP endpoints
+│   ├── db/
+│   │   ├── session.py           # Async SQLAlchemy engine/session
+│   │   └── test_connection.py   # Manual DB connection script
+│   ├── models/                  # ORM model exports
+│   ├── schemas/                 # API schema exports
+│   ├── services/
+│   │   └── cv_service.py        # Business logic for CV save/load
+│   ├── config.py                # Env-based settings
+│   └── main.py                  # FastAPI app + startup checks
+├── cv_runner.py                 # Console-script bootstrap
+├── pyproject.toml               # Dependencies and scripts
+└── uv.lock                      # uv lockfile
+```
 
-- `GET /health` - health check
-- `PUT /cvs` - create CV (expects JSON body)
-- `GET /cvs/{cv_id}` - fetch CV
-
-## Run locally
-
+## Run
 ```bash
-cp .env.example .env
-# Set DATABASE_URL (e.g. postgresql+asyncpg://user:pass@localhost:5432/ai_hr)
-
-uv sync   # or: pip install .
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8003
+cd backend/cv-microservice
+uv sync
+uv run cv-microservice
 ```

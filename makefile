@@ -61,7 +61,7 @@ list-backend-processes:
 start-frontend:
 	cd ./frontend/main-app && pnpm build
 	pm2 delete nextjs-ai-mentor-app || true
-	pm2 start npm --name "nextjs-ai-mentor-app " -- start
+	pm2 start npm --namespace "nextjs-ai-mentor-app " -- start
 	pm2 save
 
 run-migrations:
