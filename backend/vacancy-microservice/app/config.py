@@ -15,7 +15,7 @@ class Settings(BaseSettings):
   )
 
   app_name: str = "vacancy-microservice"
-  port: int = 8000
+  port: int = 8005
   database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/ai_hr"
 
 

@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     )
 
     app_name: str = "ai-ranking-microservice"
-    port: int = 8001
+    port: int = 8004
 
     # Optional: same pattern as cv-microservice (verify DB on startup when set)
     database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/ai_hr"

@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     )
 
     app_name: str = "rag-index-microservice"
-    port: int = 8002
+    port: int = 8003
 
     openai_api_key: str = ""
     openai_chat_model: str = "gpt-4o-mini"
