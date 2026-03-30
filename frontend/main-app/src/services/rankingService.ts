@@ -1,6 +1,6 @@
 import { getOrCreateUserId } from "./cvService";
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8004" ;
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8001" ;
 
 export async function getRenkingVacancies(): Promise<Entity.Vacancy[]> {
   const userId = getOrCreateUserId();

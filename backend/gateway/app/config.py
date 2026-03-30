@@ -15,13 +15,14 @@ class Settings(BaseSettings):
     )
 
     app_name: str = "gateway-microservice"
-    port: int = 8004
+    port: int = 8001
 
-    cv_microservice_url: str = "http://localhost:8003"
-    vacancy_microservice_url: str = "http://localhost:8000"
-    ranking_microservice_url: str = "http://localhost:8001"
-    rag_index_microservice_url: str = "http://localhost:8002"
+    cv_microservice_url: str = "http://localhost:8002"
+    rag_index_microservice_url: str = "http://localhost:8003"
+    ranking_microservice_url: str = "http://localhost:8004"
+    vacancy_microservice_url: str = "http://localhost:8005"
 
+ 
     request_timeout_seconds: float = 30.0
 
 

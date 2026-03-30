@@ -1,4 +1,4 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8004" ;
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8001" ;
 
 const USER_ID_KEY = "ai-hr-user-id";
 const CV_ID_KEY = "ai-hr-cv-id";
