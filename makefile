@@ -18,11 +18,11 @@ system-deps:
 
 install-backend-deps: venv
 	$(PIP) install "uvicorn[standard]" gunicorn uvicorn-worker uv
-	cd ./backend/gateway && $(UV) sync && uv add gunicorn "uvicorn[standard]"
-	cd ./backend/cv-microservice && $(UV) sync && uv add gunicorn "uvicorn[standard]"
-	cd ./backend/rag-index-microservice && $(UV) sync && uv add gunicorn "uvicorn[standard]"
-	cd ./backend/ranking-microservice && $(UV) sync && uv add gunicorn "uvicorn[standard]"
-	cd ./backend/vacancy-microservice && $(UV) sync && uv add gunicorn "uvicorn[standard]"
+	cd ./backend/gateway && $(UV) sync && $(UV) add gunicorn "uvicorn[standard]"
+	cd ./backend/cv-microservice && $(UV) sync && $(UV) add gunicorn "uvicorn[standard]"
+	cd ./backend/rag-index-microservice && $(UV) sync && $(UV) add gunicorn "uvicorn[standard]"
+	cd ./backend/ranking-microservice && $(UV) sync && $(UV) add gunicorn "uvicorn[standard]"
+	cd ./backend/vacancy-microservice && $(UV) sync && $(UV) add gunicorn "uvicorn[standard]"
 
 # Ubuntu: install Node.js (NodeSource LTS) and latest pnpm, then project deps. No OS detection.
 install-frontend-deps:
