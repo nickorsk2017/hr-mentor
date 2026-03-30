@@ -43,12 +43,12 @@ ai-hr-agent/
 Backend services use a shared env file:
 
 - `backend/_common/.env`
-- template: `backend/_common/.env.example`
+- template config: `backend/_common/.env.example`
 
 Frontend uses:
 
 - `frontend/main-app/.env`
-- template: `frontend/main-app/.env.example`
+- template config: `frontend/main-app/.env.example`
 
 ## Quick Start
 
