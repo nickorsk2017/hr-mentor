@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { useVacancyStore } from "@/stores/vacancyStore";
-import { Modal } from "@/components/common/ui/Modal";
 import { Container } from "@/components/layout/Container";
 import { Header } from "@/components/layout/Header";
 import { VacancyCard } from "./VacancyCard";
@@ -79,7 +79,7 @@ export function VacanciesPage() {
 
     const stages = vacancy?.stages ?? [];
     const newStage: Entity.VacancyStage = {
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       name: !stages.length ? "HR Interview" : "",
       status: "scheduled",
       notes: "",

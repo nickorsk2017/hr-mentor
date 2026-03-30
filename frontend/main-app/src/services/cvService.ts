@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8001" ;
 
 const USER_ID_KEY = "ai-hr-user-id";
@@ -8,7 +10,7 @@ export function getOrCreateUserId(): string {
   const existing = window.localStorage.getItem(USER_ID_KEY);
   if (existing) return existing;
 
-  const created = crypto.randomUUID();
+  const created = uuidv4();
   window.localStorage.setItem(USER_ID_KEY, created);
   return created;
 }
