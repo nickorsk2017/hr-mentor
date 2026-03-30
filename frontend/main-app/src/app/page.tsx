@@ -17,9 +17,8 @@ export default function Home() {
             AI Carrier Mentor for your career growth
           </h1>
           <p className="max-w-xl text-xl md:text-2xl leading-relaxed text-zinc-600">
-            Paste your CV, track vacancies and interview stages, and let an AI
-            mentor rank opportunities and suggest technologies to grow into
-            your next role.
+            Turn your CV into a smart career strategy.
+            Track opportunities, manage interviews, and let AI guide you toward roles that truly match your experience and goals.
           </p>
           <div>
             <Link
@@ -59,10 +58,10 @@ export default function Home() {
             Finding the right job is overwhelming.
           </p>
           <p className="text-xl leading-relaxed text-zinc-600">
-            Candidates spend hours scrolling through irrelevant vacancies,
-            guessing which roles actually fit their skills. Most platforms rely
-            on basic keyword ranking—ignoring real experience, seniority, and
-            context.
+            Job searching shouldn’t feel like guesswork.
+
+            You spend hours scrolling through irrelevant vacancies, trying to figure out what actually fits.
+            Most platforms rely on basic keyword matching—ignoring your real experience, seniority, and career direction.
           </p>
         </div>
         <div className="flex flex-col gap-5 rounded-3xl border border-violet-200/80 bg-gradient-to-br from-violet-50/90 to-white p-6 shadow-sm">
@@ -82,7 +81,7 @@ export default function Home() {
               <span className="shrink-0" aria-hidden="true">
                 🎯
               </span>
-              <span>See the most relevant roles first</span>
+              <span>Discover the most relevant roles instantly</span>
             </li>
             <li className="flex gap-3">
               <span className="shrink-0" aria-hidden="true">
@@ -135,7 +134,7 @@ export default function Home() {
         </Link>
 
         <Link
-          href="/ranking"
+          href="matching"
           className="group rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md"
         >
           <IconBadge className="bg-amber-100 text-amber-700">
