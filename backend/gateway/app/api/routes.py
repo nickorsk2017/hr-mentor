@@ -25,6 +25,8 @@ async def upsert_cv(payload: CvIndexPayload) -> Any:
         path="/cvs",
         json_body=payload.model_dump(mode="json"),
     )
+
+    # add cv to index
     await index_cv(payload);
 
     return cv_response
@@ -49,10 +51,10 @@ async def create_vacancy(body: dict[str, Any] = Body(...)) -> Any:
     )
 
 
-@router.put("/vacancies/{vacancy_id}")
+@router.patch("/vacancies/{vacancy_id}")
 async def update_vacancy(vacancy_id: UUID, body: dict[str, Any] = Body(...)) -> Any:
     return await forward_json(
-        method="PUT",
+        method="PATCH",
         base_url=settings.vacancy_microservice_url,
         path=f"/vacancies/{vacancy_id}",
         json_body=body,

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useImperativeHandle } from "react";
+import React, { useEffect, useImperativeHandle, useRef } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Placeholder } from "@tiptap/extensions";
@@ -32,9 +32,20 @@ export const RichEditor = React.forwardRef<RichEditorHandle, RichEditorProps>(fu
   onMouseUp,
   placeholder,
 }, ref) {
+  const onChangeHtmlRef = useRef(onChangeHtml);
+
+  useEffect(() => {
+    onChangeHtmlRef.current = onChangeHtml;
+  }, [onChangeHtml]);
+
   const editor = useEditor({
-    extensions: [StarterKit, Placeholder.configure({ placeholder: placeholder ?? "" })],
-    content: valueHtml || "<p></p>",
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: placeholder ?? ""
+      }),
+    ],
+    content: valueHtml || "",
     editorProps: {
       attributes: {
         class:
@@ -43,7 +54,7 @@ export const RichEditor = React.forwardRef<RichEditorHandle, RichEditorProps>(fu
     },
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
-      onChangeHtml(editor.getHTML());
+      onChangeHtmlRef.current(editor.getHTML());
     },
   });
 

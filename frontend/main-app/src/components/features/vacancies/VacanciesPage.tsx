@@ -7,10 +7,6 @@ import { Container } from "@/components/layout/Container";
 import { Header } from "@/components/layout/Header";
 import { VacancyCard } from "./VacancyCard";
 import {
-  deleteVacancyFromMatchingIndex,
-  indexVacancyForMatching,
-} from "@/services/rankingService";
-import {
   createVacancyOnBackend,
   deleteVacancyOnBackend,
   updateVacancyOnBackend,
@@ -64,12 +60,6 @@ export function VacanciesPage() {
     setActiveVacancyId(saved.id);
     addVacancy(saved);
     scrollToBottomSmooth();
-
-    try {
-      await indexVacancyForMatching(saved);
-    } catch (e) {
-      console.warn("[vacancies] Pinecone index skipped:", e);
-    }
   };
 
 
@@ -141,12 +131,6 @@ export function VacanciesPage() {
           });
 
           updateVacancyStages(mapped.id, mapped.stages ?? []);
-
-          try {
-            await indexVacancyForMatching(mapped);
-          } catch (indexErr) {
-            console.warn("[vacancies] Pinecone re-index skipped:", indexErr);
-          }
         } catch (e) {
           console.error(e);
           window.alert("Could not save vacancy. Check the API is running.");
@@ -169,12 +153,6 @@ export function VacanciesPage() {
       console.error(e);
       window.alert("Could not delete vacancy. Check the API is running.");
       return;
-    }
-
-    try {
-      await deleteVacancyFromMatchingIndex(vacancyId);
-    } catch (e) {
-      console.warn("[vacancies] Pinecone index delete skipped:", e);
     }
   };
 

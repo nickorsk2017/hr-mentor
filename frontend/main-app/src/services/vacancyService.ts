@@ -57,7 +57,7 @@ export async function updateVacancyOnBackend(
   const userId = getOrCreateUserId();
 
   const res = await fetch(`${API_URL}/vacancies/${vacancyId}`, {
-    method: "PUT",
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       user_id: userId,

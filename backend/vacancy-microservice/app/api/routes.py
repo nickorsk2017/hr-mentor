@@ -28,7 +28,7 @@ async def upsert_vacancy_endpoint(req: CreateVacancyRequest) -> VacancyResponse:
     return await upsert_vacancy(req)
 
 
-@router.put("/vacancies/{vacancy_id}", response_model=VacancyResponse)
+@router.patch("/vacancies/{vacancy_id}", response_model=VacancyResponse)
 async def update_vacancy_endpoint(
     vacancy_id: UUID, req: UpdateVacancyRequest
 ) -> VacancyResponse:

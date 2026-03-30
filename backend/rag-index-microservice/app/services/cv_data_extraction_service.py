@@ -29,8 +29,6 @@ async def extract_cv_data_for_index(cv_html: str) -> CvExtractionRecord:
     """
     plain_cv = strip_html_to_text(cv_html)
 
-    if not plain_cv.strip():
-        raise ValueError("CV text is empty after stripping HTML")
 
     llm = _get_llm_client()
     structured = llm.with_structured_output(CvExtractionRecord)

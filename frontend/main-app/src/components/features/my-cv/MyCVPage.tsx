@@ -55,35 +55,21 @@ export default function MyCVPage() {
     };
   }, [setCv, fileName]);
 
-  const handleSave = async () => {
-    setIsLoading(true);
-    clearTimeout(timeLoadingRef.current);
-    await saveCV(draftHtml);
-
-    timeLoadingRef.current = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    setCv({
-      contentHtml: draftHtml,
-      uploadedFileName: fileName,
-    });
-  };
 
   const handleChangeHtml = (html: string) => {
     setDraftHtml(html);
+
+    clearTimeout(timeLoadingRef.current);
+    timeLoadingRef.current = setTimeout(async () => {
+      setIsLoading(true);
+      await saveCV(html);
+      setIsLoading(false);
+    }, 1800);
 
     setCv({
       contentHtml: html,
       uploadedFileName: fileName,
     });
-
-    clearTimeout(timerRef.current);
-
-    timerRef.current = setTimeout(() => {
-      handleSave();
-    }, 2000);
-
   };
 
   return (
