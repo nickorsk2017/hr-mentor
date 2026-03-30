@@ -16,7 +16,7 @@ system-deps:
 	sudo apt-get install -y supervisor
 	sudo apt install -y gunicorn  python3-uvicorn
 	sudo apt install python3-pip
-	sudo pip install --break-system-packages uvicorn-worker
+	sudo pip install --ignore-installed --break-system-packages uvicorn-worker
 	sudo apt install postgresql postgresql-contrib -y
 	curl -LsSf https://astral.sh/uv/install.sh | sh
 	source ~/.bashrc
