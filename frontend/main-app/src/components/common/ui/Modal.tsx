@@ -14,7 +14,7 @@ export function Modal({ open, title, children, onClose }: ModalProps) {
   if (!open) return null;
 
   return (
-    <div className="fixed top-0 inset-0 z-60 flex items-center justify-center bg-black/40 px-4" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby={title}>
+    <div className="fixed top-0 inset-0 z-80 flex items-center justify-center bg-black/40 px-4" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby={title}>
       <div className="rounded-2xl bg-white p-4 shadow-xl w-[650px] max-w-full" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start justify-between gap-2">
           <div className="flex flex-col gap-1">
