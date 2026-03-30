@@ -8,9 +8,6 @@ from app.config import settings
 
 def _normalize_database_url(raw: str) -> str:
     url = make_url(raw)
-    print(url)
-    print("--------------------------------")
-    print("--------------------------------")
 
     if url.drivername in {"postgresql", "postgres"}:
         url = url.set(drivername="postgresql+asyncpg")

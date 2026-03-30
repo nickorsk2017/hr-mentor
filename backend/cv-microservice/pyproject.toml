@@ -22,6 +22,7 @@ dependencies = [
 
 [project.scripts]
 cv-microservice = "cv_runner:main"
+test-connection = "app.db.test_connection:main"
 
 [tool.setuptools]
 include-package-data = false

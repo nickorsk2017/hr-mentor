@@ -16,6 +16,6 @@ class Settings(BaseSettings):
 
     app_name: str = "cv-microservice"
     port: int = 8002
-    database_url: str;
+    database_url: str
 
 settings = Settings()
