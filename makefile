@@ -40,11 +40,11 @@ install-deps:
 	$(MAKE) install-frontend-deps
 
 start-backend-microservices:
-	(cd backend/gateway && uv run gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8001) & \
-	(cd backend/cv-microservice && uv run gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8002) & \
-	(cd backend/rag-index-microservice && uv run gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8003) & \
-	(cd backend/ranking-microservice && uv run gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8004) & \
-	(cd backend/vacancy-microservice && uv run gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8005) & \
+	(cd backend/gateway && (UV) run gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8001) & \
+	(cd backend/cv-microservice && (UV) run gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8002) & \
+	(cd backend/rag-index-microservice && (UV) run gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8003) & \
+	(cd backend/ranking-microservice && (UV) run gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8004) & \
+	(cd backend/vacancy-microservice && (UV) run gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8005) & \
 	wait
 
 start-frontend:
