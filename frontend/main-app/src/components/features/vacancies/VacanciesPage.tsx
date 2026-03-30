@@ -138,7 +138,7 @@ export function VacanciesPage() {
         } finally {
           setSavingVacancyId(null);
         }
-    }, 2500;
+    }, 2500)
   };
 
   const onUpdateVacancyHandler = (vacancyId: string, patch: Partial<Entity.Vacancy>) => {
