@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 from typing import Self
 from pydantic import BaseModel, Field, model_validator
+from _common.schemas.vacancy import VacancyStagePayload
 from dataclasses import dataclass, field
 from uuid import UUID
 from typing import Any
@@ -26,6 +27,7 @@ class VacancyIndexPayload(BaseModel):
     vacancy_id: str = Field(..., min_length=1, description="Stable id, e.g. vacancy UUID")
     title: str = Field("", max_length=512)
     company: str | None = Field(None, max_length=512)
+    stages: list[VacancyStagePayload] = Field(default_factory=list)
     description: str = Field(
         ...,
         min_length=1,

@@ -9,6 +9,7 @@ import {
 } from "@/services/cvService";
 import { Header } from "@/components/layout/Header";
 import { Container } from "@/components/layout/Container";
+import { Preloader } from "@/components/common/ui/Preloader";
 
 export default function MyCVPage() {
   const cv = useCvStore((s) => s.cv);
@@ -78,6 +79,7 @@ export default function MyCVPage() {
         title="My CV"
       />
       <RichEditor autoFocus placeholder="Paste your CV here..."  valueHtml={draftHtml} onChangeHtml={handleChangeHtml} classToolbar="!top-[64px]" />
+      {isLoading && <Preloader />}
   </Container>
   );
 }

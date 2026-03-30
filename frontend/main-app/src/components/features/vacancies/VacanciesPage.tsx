@@ -11,6 +11,7 @@ import {
   deleteVacancyOnBackend,
   updateVacancyOnBackend,
 } from "@/services/vacancyService";
+import { Preloader } from "@/components/common/ui/Preloader";
 
 export function VacanciesPage() {
   const {
@@ -137,7 +138,7 @@ export function VacanciesPage() {
         } finally {
           setSavingVacancyId(null);
         }
-    }, 3000);
+    }, 1800);
   };
 
   const onUpdateVacancyHandler = (vacancyId: string, patch: Partial<Entity.Vacancy>) => {
@@ -185,6 +186,7 @@ export function VacanciesPage() {
           />
         ))
       )}
+      {!!savingVacancyId && <Preloader />}
       <div ref={listEndRef} />
 
   </Container>

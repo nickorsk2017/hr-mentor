@@ -7,6 +7,18 @@ from fastapi import APIRouter, Body, Query
 
 from app.config import settings
 from _common.schemas.vacancy_index import CvIndexPayload
+from _common.schemas.vacancy import (
+    CreateVacancyRequest,
+    UpdateVacancyRequest,
+    DeleteVacancyResponse,
+    VacancyResponse,
+    VacanciesResponse,
+)
+from _common.schemas.vacancy_index import (
+    VacancyIndexPayload,
+    VacancyIndexResponse,
+)
+
 from app.services.proxy_service import forward_json
 
 router = APIRouter()
@@ -52,12 +64,18 @@ async def create_vacancy(body: dict[str, Any] = Body(...)) -> Any:
 
 
 @router.patch("/vacancies/{vacancy_id}")
-async def update_vacancy(vacancy_id: UUID, body: dict[str, Any] = Body(...)) -> Any:
+async def update_vacancy(vacancy_id: UUID, payload: UpdateVacancyRequest) -> Any:
+    payload_dict = payload.model_dump(mode="json")
+    payload_dict.update({"vacancy_id": str(vacancy_id)})
+
+    # Re-index vacancy after update.
+    await index_vacancy(payload_dict)
+
     return await forward_json(
         method="PATCH",
         base_url=settings.vacancy_microservice_url,
         path=f"/vacancies/{vacancy_id}",
-        json_body=body,
+        json_body=payload_dict,
     )
 
 
@@ -110,7 +128,7 @@ async def rag_index_health() -> Any:
 
 
 @router.patch("/vacancies/index")
-async def index_vacancy(body: dict[str, Any] = Body(...)) -> Any:
+async def index_vacancy(body: VacancyIndexPayload) -> Any:
     return await forward_json(
         method="PATCH",
         base_url=settings.rag_index_microservice_url,

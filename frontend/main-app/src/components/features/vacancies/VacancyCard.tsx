@@ -266,6 +266,7 @@ export function VacancyCard({
       <div className={cx("flex flex-col gap-2 sticky top-0 z-50 border !border-t-0 rounded-2xl !rounded-t-none h-4 shadow-[0_8px_20px_rgba(17,24,39,0.07)]", isActive ? "border-violet-500" : "border-gray-300")}>
           
       </div>
+      
     </article>
   );
 }

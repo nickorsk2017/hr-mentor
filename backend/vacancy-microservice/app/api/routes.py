@@ -7,7 +7,7 @@ from ..services.vacancy_service import (
     update_vacancy,
     delete_vacancy,
 )
-from ..schemas.vacancy import (
+from _common.schemas.vacancy import (
     CreateVacancyRequest,
     UpdateVacancyRequest,
     DeleteVacancyResponse,
