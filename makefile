@@ -63,3 +63,6 @@ start-frontend:
 	pm2 delete nextjs-ai-mentor-app || true
 	pm2 start npm --name "nextjs-ai-mentor-app " -- start
 	pm2 save
+
+run-migrations:
+	cd ./backend/_common/db && $(UV) run alembic upgrade head
