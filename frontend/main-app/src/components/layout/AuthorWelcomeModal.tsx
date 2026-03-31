@@ -30,9 +30,11 @@ export function AuthorWelcomeModal() {
         <br/><br/>
         If you’re looking to build an AI-powered product, I’d be glad to help.
       </p>
-     <Link href={LINKEDIN_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-white font-semibold text-[18px] bg-blue-500 px-4 py-2 rounded-lg w-full md:w-auto">
-        <LinkedInIcon /> Visit my LinkedIn Page
-      </Link>
+      <div className="flex justify-center md:justify-start">
+        <Link href={LINKEDIN_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-white font-semibold text-[18px] bg-blue-500 px-4 py-2 rounded-lg w-full md:w-auto hover:bg-blue-600">
+          <LinkedInIcon /> Visit my LinkedIn Page
+        </Link>
+      </div>
     </Modal>
   );
 }

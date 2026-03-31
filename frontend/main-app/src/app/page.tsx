@@ -14,7 +14,7 @@ export default function Home() {
       <section className="grid items-center gap-6 rounded-3xl border border-zinc-200 bg-gradient-to-br from-violet-40 to-white p-6 shadow-sm lg:grid-cols-[1.1fr_1fr] mb-8">
         <div className="flex flex-col gap-4">
           <h1 className="max-w-xl text-3xl md:text-5xl font-semibold leading-tight text-zinc-900">
-            AI Carrier Mentor for your career growth
+            AI Career Mentor for your career growth
           </h1>
           <p className="max-w-xl text-xl md:text-2xl leading-relaxed text-zinc-600">
             Turn your CV into a smart career strategy.
@@ -49,32 +49,34 @@ export default function Home() {
         <h2 id="problem-solution-heading" className="sr-only">
           Problem and solution
         </h2>
-        <div className="flex flex-col gap-4 rounded-3xl border border-rose-200/80 bg-gradient-to-br from-rose-50/90 to-white p-6 shadow-sm">
-          <div className="flex items-center gap-4 h-[150px]">
+        <div className="flex flex-col gap-4 rounded-3xl border border-rose-200/80 bg-gradient-to-br from-rose-50/90 to-white p-5 md:p-6 shadow-sm">
+          <div className="flex items-center gap-4 min-h-[120px] md:min-h-[150px]">
             <Image src="/icon-problem.png" alt="Problem" width={100} height={100} className="w-[120px] md:w-[150px] h-auto" />
             <h3 className="text-2xl md:text-4xl font-semibold text-zinc-900">Problem</h3>
           </div>
-          <p className="text-xl font-medium leading-relaxed text-zinc-800">
+          <p className="text-lg md:text-xl font-medium leading-relaxed text-zinc-800">
             Finding the right job is overwhelming.
           </p>
-          <p className="text-xl leading-relaxed text-zinc-600">
-            Job searching shouldn’t feel like guesswork.<br /><br />
-            Don't waste hours on irrelevant roles—most platforms rely on keywords, ignoring your real experience and career direction.
+          <p className="text-lg md:text-xl leading-relaxed text-zinc-600">
+            Job searching shouldn&apos;t feel like guesswork.
+          </p>
+          <p className="text-lg md:text-xl leading-relaxed text-zinc-600">
+            Don&apos;t waste hours on irrelevant roles—most platforms rely on keywords, ignoring your real experience and career direction.
           </p>
         </div>
-        <div className="flex flex-col gap-5 rounded-3xl border border-violet-200/80 bg-gradient-to-br from-violet-50/90 to-white p-6 shadow-sm">
-          <div className="flex items-center gap-6 h-[150px]">
+        <div className="flex flex-col gap-5 rounded-3xl border border-violet-200/80 bg-gradient-to-br from-violet-50/90 to-white p-5 md:p-6 shadow-sm">
+          <div className="flex items-center gap-6 min-h-[120px] md:min-h-[150px]">
             <Image src="/icon-robot.png" alt="Solution" width={150} height={150}  className="w-[120px] md:w-[150px] h-auto" />
             <h3 className="text-2xl md:text-4xl font-semibold text-zinc-900">Solution</h3>
           </div>
-          <p className="text-xl font-medium leading-relaxed text-zinc-800">
+          <p className="text-lg md:text-xl font-medium leading-relaxed text-zinc-800">
             We do the thinking for you.
           </p>
-          <p className="text-xl leading-relaxed text-zinc-600">
+          <p className="text-lg md:text-xl leading-relaxed text-zinc-600">
             Our AI analyzes your CV and ranks vacancies based on real fit—not
             just keywords.
           </p>
-          <ul className="space-y-3 border-t border-violet-100 pt-4 text-xl leading-relaxed text-zinc-700">
+          <ul className="space-y-3 border-t border-violet-100 pt-4 text-lg md:text-xl leading-relaxed text-zinc-700">
             <li className="flex gap-3">
               <span className="shrink-0" aria-hidden="true">
                 🎯
@@ -132,7 +134,7 @@ export default function Home() {
         </Link>
 
         <Link
-          href="matching"
+          href="/matching"
           className="group rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md"
         >
           <IconBadge className="bg-amber-100 text-amber-700">
