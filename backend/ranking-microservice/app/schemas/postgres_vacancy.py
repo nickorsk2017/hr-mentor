@@ -29,12 +29,12 @@ class Vacancy(BaseModel):
         le=100,
         description="OpenAI CV–vacancy fit when a CV exists in DB; null if no CV or not LLM-ranked",
     )
-    reason: str | None = Field(
+    advice: str | None = Field(
         default=None,
         description="Optional LLM explanation for the assigned match score.",
     )
     tech_score: int | None = Field(default=None, ge=0, le=100)
-    years_score: int | None = Field(default=None, ge=0, le=100)
+    seniority_score: int | None = Field(default=None, ge=0, le=100)
     other_score: int | None = Field(default=None, ge=0, le=100)
     domain_score: int | None = Field(default=None, ge=0, le=100)
     aligned_skills: list[str] = Field(default_factory=list)

@@ -6,24 +6,9 @@ import { useVacancyRankingStore } from "@/stores/vacancyRankedStore";
 import Image from "next/image";
 import { VacancyRankedCard } from "@/components/features/ranking/VacancyRankedCard";
 
-function computeFitScore(cvText: string, vacancy: Entity.Vacancy): Entity.RankedVacancy {
+function computeFitScore(cvText: string, vacancy: Entity.RankedVacancy): Entity.RankedVacancy {
   const stages = vacancy.stages ?? [];
-  const base: Entity.RankedVacancy = {
-    ...vacancy,
-    stages,
-    fitScore: 0,
-    completedStages: 0,
-    totalStages: stages.length,
-    failedStages: 0,
-    recommendations: [],
-    whyScore: vacancy.reason ?? null,
-    techScore: vacancy.tech_score ?? null,
-    yearsScore: vacancy.years_score ?? null,
-    otherScore: vacancy.other_score ?? null,
-    domainScore: vacancy.domain_score ?? null,
-    alignedSkills: vacancy.aligned_skills ?? [],
-    notAlignedSkills: vacancy.not_aligned_skills ?? [],
-  };
+  const base: Entity.RankedVacancy = vacancy;
 
   const plainCv = cvText.toLowerCase();
   const sourceText =
@@ -96,17 +81,17 @@ function computeFitScore(cvText: string, vacancy: Entity.Vacancy): Entity.Ranked
 
   return {
     ...base,
-    fitScore,
-    completedStages,
-    totalStages,
-    failedStages,
-    recommendations,
+    match_score: fitScore,
+    completed_stages: completedStages,
+    total_stages: totalStages,
+    failed_stages: failedStages,
+    recommendations: recommendations,
   };
 }
 
 export default function RankingPage() {
   const cv = useCvStore((s) => s.cv);
-  const vacancies = useVacancyRankingStore((s) => s.vacancies);
+  const vacancies: Entity.RankedVacancy[] = useVacancyRankingStore((s) => s.vacancies);
   const loadingVacancies = useVacancyRankingStore((s) => s.loadingVacancies);
   const vacanciesError = useVacancyRankingStore((s) => s.vacanciesError);
   const activeVacancyId = useVacancyRankingStore((s) => s.activeVacancyId);
@@ -133,9 +118,9 @@ export default function RankingPage() {
     );
     const mapped = vacancies.sort((a, b) => b.match_score - a.match_score).map((v) => {
       const local = computeFitScore(cvText, v);
-      const api = v.match_score;
-      if (typeof api === "number") {
-        return { ...local, fitScore: Math.max(0, Math.min(100, Math.round(api))) };
+      const match_score = v.match_score;
+      if (typeof match_score === "number") {
+        return { ...local, match_score: Math.max(0, Math.min(100, Math.round(match_score))) };
       }
       return local;
     });
@@ -143,14 +128,14 @@ export default function RankingPage() {
     if (hasApiRank) {
       return mapped;
     }
-    return mapped.sort((a, b) => b.fitScore - a.fitScore);
+    return mapped.sort((a, b) => b.match_score - a.match_score);
   }, [cv, vacancies]);
 
   const avgFit = ranked.length
-    ? Math.round(ranked.reduce((acc, item) => acc + item.fitScore, 0) / ranked.length)
+    ? Math.round(ranked.reduce((acc, item) => acc + item.match_score, 0) / ranked.length)
     : 0;
-  const strongMatches = ranked.filter((item) => item.fitScore >= 75).length;
-  const weakMatches = ranked.filter((item) => item.fitScore < 50).length;
+  const strongMatches = ranked.filter((item) => item.match_score >= 75).length;
+  const weakMatches = ranked.filter((item) => item.match_score < 50).length;
 
   return (
     <section className="flex w-full flex-col gap-5 mt-16 md:mt-0">

@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo } from "react";
+
 type ComponentProps = {
   vacancy: Entity.RankedVacancy;
   index: number;
@@ -16,7 +18,7 @@ function scoreTone(score: number): string {
 
 function chipStyle(kind: "aligned" | "missing"): string {
   return kind === "aligned"
-    ? "border-violet-200 bg-violet-100 text-violet-800"
+    ? "border-black bg-gray-800 text-white"
     : "border-zinc-200 bg-zinc-100 text-zinc-700";
 }
 
@@ -26,18 +28,43 @@ export function VacancyRankedCard({
   isActive,
   onActivate,
 }: ComponentProps) {
-  const safeScore = Math.max(0, Math.min(100, Math.round(vacancy.fitScore ?? 0)));
-  const completedStages = vacancy.completedStages ?? 0;
-  const totalStages = vacancy.totalStages ?? Math.max(vacancy.planned_stages ?? 1, 1);
-  const failedStages = vacancy.failedStages ?? 0;
+  const completedStages = vacancy.completed_stages ?? 0;
+  const totalStages = vacancy.total_stages ?? Math.max(vacancy.planned_stages ?? 1, 1);
+  const failedStages = vacancy.failed_stages ?? 0;
   const progressPct = Math.max(0, Math.min(100, Math.round((completedStages / totalStages) * 100)));
-  const aligned = vacancy.alignedSkills ?? [];
-  const missing = vacancy.notAlignedSkills ?? [];
+  const salary_range: string = vacancy.meta_data?.salary_range as string || "No salary range provided";
+
+  const summary = vacancy.summary;
+  const summary_truncated = useMemo(() => summary ? summary?.slice(0, 100) + "..." : "", [summary]);
+
+
+  const skills_jsx = useMemo(() => {
+    return <div className="flex flex-wrap gap-2">
+      {vacancy.aligned_skills.map((skill: string) => (
+            <span
+              key={`aligned-${vacancy.id}-${skill}`}
+              className={`inline-flex items-center rounded-full border px-3 py-1 text-sm ${chipStyle("aligned")}`}
+            >
+              {skill}
+            </span>
+        ))}
+      {vacancy.not_aligned_skills.map((skill: string) => (
+            <span
+              key={`missing-${vacancy.id}-${skill}`}
+              className={`inline-flex items-center rounded-full border px-3 py-1 text-sm ${chipStyle("missing")}`}
+            >
+              {skill}
+            </span>
+          ))}
+    </div>
+  }, [vacancy.aligned_skills, vacancy.not_aligned_skills]);
+
+  console.log(vacancy);
 
   return (
     <article
-      className={`flex cursor-pointer flex-col gap-4 rounded-2xl border bg-white p-4 shadow-sm transition ${
-        isActive ? "border-violet-400 shadow-violet-100" : "border-zinc-200 hover:border-zinc-300"
+      className={`flex cursor-pointer flex-col gap-4 rounded-2xl border bg-white p-4 shadow-sm transition hover:scale-101 ${
+        isActive ? "border-violet-400 shadow-violet-100" : "border-zinc-200 hover:border-zinc-300 hover:scale-101"
       }`}
       onClick={onActivate}
     >
@@ -52,15 +79,17 @@ export function VacancyRankedCard({
           </p>
         </div>
 
-        <div className={`rounded-2xl bg-gradient-to-r px-4 py-2 text-white ${scoreTone(safeScore)}`}>
+        <div className={`rounded-2xl bg-gradient-to-r px-4 py-2 text-white ${scoreTone(vacancy.match_score)}`}>
           <p className="text-xs uppercase tracking-wide text-white/80">Fit</p>
-          <p className="text-3xl font-bold leading-none">{safeScore}%</p>
+          <p className="text-3xl font-bold leading-none">{vacancy.match_score ?? 0}%</p>
         </div>
       </header>
 
+      {salary_range && <div className="text-sm text-gray-900 font-medium">{salary_range}</div>}
+
       <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
-        <p className="text-sm font-medium text-zinc-700">Reasoning</p>
-        <p className="mt-1 text-base text-zinc-700">{vacancy.whyScore || "No explanation returned by the model."}</p>
+        <p className="text-sm font-medium text-zinc-700">Summary</p>
+        <p className="mt-1 text-base text-zinc-700 whitespace-pre-line">{(isActive ? summary : summary_truncated) || "No summary returned by the model."}</p>
       </div>
 
       <div className="grid gap-3 md:grid-cols-3">
@@ -75,55 +104,19 @@ export function VacancyRankedCard({
 
         <div className="rounded-xl border border-zinc-200 p-3">
           <p className="text-sm font-medium text-zinc-700">AI Score Breakdown</p>
-          <p className="mt-1 text-sm text-zinc-600">Tech: {vacancy.techScore ?? "—"} | Years: {vacancy.yearsScore ?? "—"}</p>
-          <p className="text-sm text-zinc-600">Domain: {vacancy.domainScore ?? "—"} | Other: {vacancy.otherScore ?? "—"}</p>
+          <p className="mt-1 text-sm text-zinc-600">Tech: {vacancy.tech_score ?? "—"} | Seniority: {vacancy.seniority_score ?? "—"}</p>
+          <p className="text-sm text-zinc-600">Domain: {vacancy.domain_score ?? "—"} | Other: {vacancy.other_score ?? "—"}</p>
         </div>
 
         <div className="rounded-xl border border-violet-200 bg-violet-50 p-3">
-          <p className="text-sm font-medium text-violet-800">Recommendations</p>
+          <p className="text-sm font-medium text-violet-800">Advice</p>
           <p className="mt-1 text-sm text-violet-700">
-            {vacancy.recommendations[0] || "Keep your CV impact-focused and aligned with vacancy requirements."}
+            {vacancy.advice || "Keep your CV impact-focused and aligned with vacancy requirements."}
           </p>
         </div>
       </div>
 
-      <div className="space-y-2">
-        <p className="text-sm font-medium text-zinc-700">Aligned Skills</p>
-        <div className="flex flex-wrap gap-2">
-          {aligned.length > 0 ? (
-            aligned.map((skill: string) => (
-              <span
-                key={`aligned-${vacancy.id}-${skill}`}
-                className={`inline-flex items-center rounded-full border px-3 py-1 text-sm ${chipStyle("aligned")}`}
-              >
-                {skill}
-              </span>
-            ))
-          ) : (
-            <span className="text-sm text-zinc-500">No aligned skills extracted.</span>
-          )}
-        </div>
-      </div>
-
-      {isActive && (
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-zinc-700">Missing / Weak Skills</p>
-          <div className="flex flex-wrap gap-2">
-            {missing.length > 0 ? (
-              missing.map((skill: string) => (
-                <span
-                  key={`missing-${vacancy.id}-${skill}`}
-                  className={`inline-flex items-center rounded-full border px-3 py-1 text-sm ${chipStyle("missing")}`}
-                >
-                  {skill}
-                </span>
-              ))
-            ) : (
-              <span className="text-sm text-zinc-500">No missing skills reported.</span>
-            )}
-          </div>
-        </div>
-      )}
+      {skills_jsx}
     </article>
   );
 }

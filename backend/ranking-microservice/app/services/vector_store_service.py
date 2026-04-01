@@ -58,19 +58,8 @@ def _resolved_list_metadata(md: dict[str, Any]) -> dict[str, Any]:
 
 
 def _get_summary_from_meta_data(md: dict[str, Any]) -> str:
-    text = (md.get("text") or "").strip()
-    if text:
-        return text
-    ext = md.get("extracted")
-    if isinstance(ext, dict):
-        summary = (ext.get("summary") or "").strip()
-        if summary:
-            return summary
-
-    title = (md.get("input_title") or md.get("title") or "").strip()
-    role = (md.get("role") or "").strip()
-    parts = [p for p in (title, role) if p]
-    return "\n".join(parts) if parts else ""
+    summary = md.get("summary")
+    return summary or ""
 
 
 def _metadata_pinecone_to_object(md: dict[str, Any]) -> VacancyFromIndex | None:
@@ -154,7 +143,7 @@ def format_cv_index_metadata_as_text(metadata: dict[str, Any]) -> str:
     if years is None:
         years = metadata.get("years_experience")
 
-    skills_str = ", ".join(skills)
+    skills_str = json.dumps(skills)
     return CV_RANK.format(summary=summary, skills=skills_str, years_experience=years)
 
 
@@ -182,12 +171,21 @@ def _fetch_cv_index_metadata_sync(user_id: str) -> dict[str, Any] | None:
 
 
 async def get_cv_profile_text_from_pinecone(user_id: uuid.UUID) -> str | None:
-    """Load indexed CV for user from Pinecone (``cv:{user_id}`` in CV namespace); return formatted text."""
+    """Backward-compatible helper: return only formatted CV text, or ``None``."""
+    text, _ = await get_cv_profile_text_and_skills_from_pinecone(user_id)
+    return text
+
+
+async def get_cv_profile_text_and_skills_from_pinecone(
+    user_id: uuid.UUID,
+) -> tuple[str | None, list[str]]:
     meta_data = await asyncio.to_thread(_fetch_cv_index_metadata_sync, str(user_id))
     if not meta_data:
-        return None
+        return None, []
+
+    skills = _normalize_skills_from_metadata(meta_data.get("skills"))
     text = format_cv_index_metadata_as_text(meta_data)
-    return text
+    return text, skills
 
 
 async def get_index_vacancies_from_pinecone(

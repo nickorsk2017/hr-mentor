@@ -6,27 +6,25 @@ from pydantic import BaseModel, Field
 class VacancyFitItem(BaseModel):
     id: str
     vacancy_id: str = Field(..., description="UUID of the vacancy, as given in the prompt")
-    match_score: int = Field(
+    match_score: float | None = Field(
         ...,
         ge=0,
         le=100,
-        description="How well the candidate's CV fits this role (skills, seniority, domain)",
+        description="How well the candidate's CV fits this role (skills, seniority_score, domain)",
     )
-    reason: str | None = Field(
+    advice: str | None = Field(
         default=None,
         description="Why the candidate's CV fits this role (max 1000 characters)",
     )
-    tech_score: int | None = Field(default=None, ge=0, le=100)
-    years_score: float | None = Field(default=None, ge=0, le=100)
-    other_score: int | None = Field(default=None, ge=0, le=100)
-    domain_score: int | None = Field(default=None, ge=0, le=100)
-    aligned_skills: list[str] = Field(default_factory=list)
-    not_aligned_skills: list[str] = Field(default_factory=list)
+    tech_score: float | None = Field(default=None, ge=0, le=100)
+    seniority_score: float | None = Field(default=None, ge=0, le=100)
+    other_score: float | None = Field(default=None, ge=0, le=100)
+    domain_score: float | None = Field(default=None, ge=0, le=100)
     meta_data: dict[str, Any] | None = Field(
         default=None,
         description="Optional metadata echo for the vacancy, as given in the prompt",
     )
-
+    summary: str | None = Field(default=None, description="Summary of the vacancy and the candidate match")
 
 class RankingResponse(BaseModel):
     """Best match first; must cover every vacancy id exactly once."""

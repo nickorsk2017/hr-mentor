@@ -11,16 +11,16 @@ namespace Entity {
 
     type Vacancy = {
         id: string;
-        userId: string;
+        user_id: string;
         title: string;
         company: string;
         description: string;
         planned_stages: number;
         created_at: string;
         match_score: number;
-        reason?: string;
+        advice?: string;
         tech_score?: number;
-        years_score?: number;
+        seniority_score?: number;
         other_score?: number;
         domain_score?: number;
         aligned_skills?: string[];

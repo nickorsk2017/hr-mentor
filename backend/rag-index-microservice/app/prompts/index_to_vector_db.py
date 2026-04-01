@@ -1,14 +1,14 @@
 EXTRACT_JOB_FIELDS = """
 - title (string) // IMPORTANT: if not present, set value to empty string
 - skills (array of technologies)
-- seniority (string) // ONLY THIS VALUES: junior/mid/senior/lead
+- seniority_score (string) // ONLY THIS VALUES: junior/mid/senior/lead
 - years_of_experience (string) // IMPORTANT: if not present, set value to empty string
 - role (string) // ONLY THIS VALUES: frontend/backend/fullstack/devops/ai/pm/
 - is_remote (true/false) // IMPORTANT: if not present, set  value to false
 - is_full_time (true/false) // IMPORTANT: if not present, set value to true
 - is_part_time (true/false) // IMPORTANT: if not present, set  value to false
 - is_contract (true/false) // IMPORTANT: if not present, set  value to false
-- salary_range (string) // IMPORTANT: if not present, set value to empty string
+- salary_range (string) // IMPORTANT: if not present, set value to empty string.
 - benefits (array of benefits)
 - field (string) e.g. healhcare, education, etc. // IMPORTANT: if not present, set value to empty string
 - company_size (string) small/medium/large/enterprise // IMPORTANT: if not present, set value to empty string
@@ -17,7 +17,7 @@ EXTRACT_JOB_FIELDS = """
 - company_location (string) // IMPORTANT: if not present, set value to empty string
 - company_website (string) // IMPORTANT: if not present, set value to empty string
 - location (string)
-- summary (string) // IMPORTANT: IT MUST BE FILLED
+- summary (string) // IMPORTANT: IT MUST BE FILLED; SPLIT PARAGRAPHS WITH 2 NEW LINES AFTER EACH PARAGRAPH
 """
 
 EXTRACT_JOB_DESCRIPTION_PROMPT = """
@@ -31,8 +31,8 @@ IMPORTANT:
 - LOCATION FIELD MUST BE FILLED WITH FOLLOWING VALUES: "city name" or "remote" or empty string
 - IS_FULL_TIME FIELD MUST BE FILLED IF NOT DEFINED, VALUE TO TRUE!
 - SUMMARY MUST DESCRIBE ABOUT COMPANY, TEAM, RESPONSIBILITIES, BENEFITS, APPROACHES, WHAT IS IMPORTANT.
-SUMMARY SHOULD BE 5-15 SENTENCES.
-- SALARY_RANGE SHOULD BE IN FORMAT "1000-2000" WITHOUT CURRENCY.
+SUMMARY SHOULD BE 8-15 SENTENCES.
+- SALARY_RANGE SHOULD BE IN FORMAT "1000-2000 USD" OR "30 / hr" OR "150000 USD / year".
 - COMPANY_SIZE SHOULD BE IN FORMAT small/medium/large/enterprise.
 - COMPANY_TYPE SHOULD BE IN FORMAT "startup" OR "enterprise" OR "government" OR "non-profit" OR "other".
 - COMPANY_INDUSTRY SHOULD BE IN FORMAT "Healthcare" OR "Finance" OR "EdTech" OR "FinTech" OR "Crypto" OR "other".
@@ -44,9 +44,45 @@ SUMMARY SHOULD BE 5-15 SENTENCES.
 """
 
 EXTRACT_CV_FOR_INDEX_FIELDS = """
-- summary (string) // REQUIRED: 5–15 sentences, third person or neutral; concrete roles, stack, achievements
-- skills (array of strings) // technologies, tools, frameworks; deduplicated, Title Case where sensible
-- years_expereance (number) // total years of professional experience as a float (e.g. 5.5); use 0 only if truly unknown
+
+{
+  "summary": string,
+  "skills": string[],
+  "years_experience": number
+}
+
+Extraction rules:
+
+1. summary (REQUIRED)
+- 4-6 sentences
+- Written in third person or neutral tone (no "I")
+- Must include:
+  - Key roles and seniority_score (e.g. Senior Backend Engineer, CTO)
+  - Core tech stack
+  - Main achievements or impact (metrics if available)
+- Avoid generic phrases like "hardworking" or "team player"
+- Be concise and factual
+- Avoid filler words, marketing language, and repetition
+- sentense should be short and concise
+
+2. skills (REQUIRED)
+- Array of unique strings
+- Include technologies, frameworks, tools, databases, cloud, languages
+- Deduplicate similar items (e.g. "JS" → "JavaScript")
+- Use Title Case where appropriate (e.g. "React", "Node.js", "PostgreSQL")
+- Do NOT include soft skills
+
+3. years_experience (REQUIRED)
+- Total professional experience in years (float, e.g. 5.5)
+- Calculate based on work history dates
+- Handle overlapping roles correctly (do not double count)
+- If unclear, estimate conservatively
+- Use 0 ONLY if no information is available
+
+Output rules:
+- Return ONLY valid JSON
+- No explanations, no extra text
+- All fields are required
 """
 
 EXTRACT_CV_FOR_INDEX_PROMPT = """
@@ -58,5 +94,5 @@ Return JSON with exactly these fields:
 Rules:
 - SUMMARY must be non-empty whenever the document contains any employment or project history; synthesize from the text.
 - SKILLS: only items clearly supported by the document; no fabrication.
-- years_expereance: infer from dates and stated experience; if ranges conflict, choose a reasonable single number.
+- years_expereance: infer from dates and stated experience; if ranges conflict, choose a adviceable single number.
 """

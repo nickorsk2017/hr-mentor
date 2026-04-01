@@ -16,7 +16,7 @@ class VacancyFromIndex:
     company: str | None
     summary: str
     meta_data: dict[str, Any]
-    reason: str | None = None
+    advice: str | None = None
 
 
 class VacancyIndexPayload(BaseModel):

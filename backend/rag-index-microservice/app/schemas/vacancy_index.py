@@ -8,7 +8,7 @@ class VacancyIndexRecord(BaseModel):
 
     title: str = ""
     skills: list[str] = Field(default_factory=list)
-    seniority: str = ""
+    seniority_score: str = ""
     role: str = ""
     is_remote: bool = False
     is_full_time: bool = True
@@ -26,5 +26,5 @@ class VacancyIndexRecord(BaseModel):
     summary: str = Field(
         default="",
         description="""SHORT_DESCRIPTION MUST DESCRIBE ABOUT COMPANY, TEAM, RESPONSIBILITIES, BENEFITS, APPROACHES, WHAT IS IMPORTANT.
-SHORT_DESCRIPTION SHOULD BE 5-15 SENTENCES.""",
+SHORT_DESCRIPTION SHOULD BE 8-10 SENTENCES.""",
     )

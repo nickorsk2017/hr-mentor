@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { getRenkingVacancies } from "@/services/rankingService";
 
 type VacancyMatchedState = {
-  vacancies: Entity.Vacancy[];
+  vacancies: Entity.RankedVacancy[];
   loadingVacancies: boolean;
   vacanciesError: string | null;
   activeVacancyId: string | null;

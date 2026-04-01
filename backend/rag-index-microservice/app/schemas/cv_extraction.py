@@ -8,7 +8,7 @@ class CvExtractionRecord(BaseModel):
 
     summary: str = Field(
         default="",
-        description="5–15 sentences: roles, impact, technologies, domains.",
+        description="8-10 sentences: roles, impact, technologies, domains.",
     )
     skills: list[str] = Field(
         default_factory=list,
