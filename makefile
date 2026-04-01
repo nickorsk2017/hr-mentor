@@ -154,6 +154,8 @@ install-frontend:
 	sudo apt-get install -y nodejs
 	cd $(FRONTEND_DIR) && npm install
 	cd $(FRONTEND_DIR) && npm run build
+	sudo npm install -g pm2
+	pm2 startup
 
 start-frontend:
 	cd $(FRONTEND_DIR) && pm2 start npm --name "$(FRONTEND_NAME)" -- start
