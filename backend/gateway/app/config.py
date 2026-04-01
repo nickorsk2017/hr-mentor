@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     rabbitmq_url: str = "amqp://guest:guest@localhost:5672/"
     rabbitmq_exchange: str = "ai_hr_events"
     rabbitmq_cv_index_routing_key: str = "cv.index"
+    rabbitmq_vacancy_index_routing_key: str = "vacancy.index"
 
     request_timeout_seconds: float = 30.0
 

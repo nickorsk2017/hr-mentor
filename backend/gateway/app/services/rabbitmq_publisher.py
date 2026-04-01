@@ -6,7 +6,7 @@ from typing import Any
 import aio_pika
 
 from app.config import settings
-from _common.schemas.vacancy_index import CvIndexPayload
+from _common.schemas.vacancy_index import CvIndexPayload, VacancyIndexPayload
 
 
 async def _publish_message(routing_key: str, payload: dict[str, Any]) -> None:
@@ -39,4 +39,17 @@ async def publish_cv_index(payload: CvIndexPayload) -> None:
     """
     data = payload.model_dump(mode="json")
     await _publish_message(settings.rabbitmq_cv_index_routing_key, data)
+
+
+async def publish_vacancy_index(payload: VacancyIndexPayload | dict[str, Any]) -> None:
+    """
+    Send a vacancy index update event for asynchronous processing by the RAG index service.
+    Accepts either a Pydantic payload or a plain dict (for convenience in gateway routes).
+    """
+    if isinstance(payload, VacancyIndexPayload):
+        data = payload.model_dump(mode="json")
+    else:
+        data = dict(payload)
+    await _publish_message(settings.rabbitmq_vacancy_index_routing_key, data)
+
 

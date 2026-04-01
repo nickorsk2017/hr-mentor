@@ -20,7 +20,7 @@ from _common.schemas.vacancy_index import (
 )
 
 from app.services.proxy_service import forward_json
-from app.services.rabbitmq_publisher import publish_cv_index
+from app.services.rabbitmq_publisher import publish_cv_index, publish_vacancy_index
 
 router = APIRouter()
 
@@ -69,8 +69,8 @@ async def update_vacancy(vacancy_id: UUID, payload: UpdateVacancyRequest) -> Any
     payload_dict = payload.model_dump(mode="json")
     payload_dict.update({"vacancy_id": str(vacancy_id)})
 
-    # Re-index vacancy after update.
-    await index_vacancy(payload_dict)
+    # Re-index vacancy after update asynchronously via RabbitMQ broker.
+    await publish_vacancy_index(payload_dict)
 
     return await forward_json(
         method="PATCH",
