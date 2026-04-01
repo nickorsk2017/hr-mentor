@@ -6,91 +6,8 @@ import { useVacancyRankingStore } from "@/stores/vacancyRankedStore";
 import Image from "next/image";
 import { VacancyRankedCard } from "@/components/features/ranking/VacancyRankedCard";
 
-function computeFitScore(cvText: string, vacancy: Entity.RankedVacancy): Entity.RankedVacancy {
-  const stages = vacancy.stages ?? [];
-  const base: Entity.RankedVacancy = vacancy;
-
-  const plainCv = cvText.toLowerCase();
-  const sourceText =
-    (vacancy.title + " " + (vacancy.description ?? "")).toLowerCase();
-
-  const keywords = Array.from(
-    new Set(
-      sourceText
-        .split(/[^a-z0-9+#.]/i)
-        .map((k) => k.trim())
-        .filter((k) => k.length > 2)
-    )
-  );
-
-  let matchCount = 0;
-  const missingKeywords: string[] = [];
-
-  for (const kw of keywords) {
-    if (!kw) continue;
-    if (plainCv.includes(kw)) {
-      matchCount += 1;
-    } else {
-      missingKeywords.push(kw);
-    }
-  }
-
-  const keywordScore =
-    keywords.length === 0 ? 0 : (matchCount / keywords.length) * 70;
-
-  const completedStages = stages.filter((s) => s.status === "done").length;
-  const failedStages = stages.filter((s) => s.status === "failed").length;
-  const totalStages = stages.length || 1;
-
-  const progressScore = (completedStages / totalStages) * 30;
-  const penalty = failedStages * 5;
-
-  const fitScore = Math.max(
-    0,
-    Math.min(100, Math.round(keywordScore + progressScore - penalty))
-  );
-
-  const recommendations: string[] = [];
-
-  if (missingKeywords.length > 0) {
-    const techLike = missingKeywords
-      .filter((k) => /react|next|node|typescript|python|java|docker|kubernetes|aws|gcp|azure|sql|graphql|kafka|tailwind/i.test(k))
-      .slice(0, 6);
-    if (techLike.length > 0) {
-      recommendations.push(
-        `Strengthen your experience with: ${techLike.join(", ")}.`
-      );
-    }
-  }
-
-  if (failedStages > 0) {
-    recommendations.push(
-      "Review notes from failed stages and practice targeted interview questions for those rounds."
-    );
-  }
-
-  if (fitScore < 50) {
-    recommendations.push(
-      "Consider tailoring your CV to highlight directly relevant experience and technologies for this vacancy."
-    );
-  } else if (fitScore >= 75) {
-    recommendations.push(
-      "This looks like a strong match. Double‑check your CV for clarity and quantifiable impact to maximise your chances."
-    );
-  }
-
-  return {
-    ...base,
-    match_score: fitScore,
-    completed_stages: completedStages,
-    total_stages: totalStages,
-    failed_stages: failedStages,
-    recommendations: recommendations,
-  };
-}
 
 export default function RankingPage() {
-  const cv = useCvStore((s) => s.cv);
   const vacancies: Entity.RankedVacancy[] = useVacancyRankingStore((s) => s.vacancies);
   const loadingVacancies = useVacancyRankingStore((s) => s.loadingVacancies);
   const vacanciesError = useVacancyRankingStore((s) => s.vacanciesError);
@@ -106,36 +23,13 @@ export default function RankingPage() {
     fetchMatchedVacancies();
   }, [fetchMatchedVacancies]);
 
-  const ranked = useMemo(() => {
-    const cvText =
-      cv?.contentHtml
-        .replace(/<[^>]+>/g, " ")
-        .replace(/\s+/g, " ")
-        .trim() ?? "";
 
-    const hasApiRank = vacancies.some(
-      (v) => typeof v.match_score === "number"
-    );
-    const mapped = vacancies.sort((a, b) => b.match_score - a.match_score).map((v) => {
-      const local = computeFitScore(cvText, v);
-      const match_score = v.match_score;
-      if (typeof match_score === "number") {
-        return { ...local, match_score: Math.max(0, Math.min(100, Math.round(match_score))) };
-      }
-      return local;
-    });
-
-    if (hasApiRank) {
-      return mapped;
-    }
-    return mapped.sort((a, b) => b.match_score - a.match_score);
-  }, [cv, vacancies]);
-
-  const avgFit = ranked.length
-    ? Math.round(ranked.reduce((acc, item) => acc + item.match_score, 0) / ranked.length)
+  const avgFit = vacancies.length
+    ? Math.round(vacancies.reduce((acc, vacancy) => acc + vacancy.match_score, 0) / vacancies.length)
     : 0;
-  const strongMatches = ranked.filter((item) => item.match_score >= 75).length;
-  const weakMatches = ranked.filter((item) => item.match_score < 50).length;
+  const strongMatches = vacancies.filter((vacancy) => vacancy.match_score >= 70).length;
+  const weakMatches = vacancies.filter((vacancy) => vacancy.match_score < 70).length;
+  const vacanciesSorted = vacancies.sort((a, b) => b.match_score - a.match_score);
 
   return (
     <section className="flex w-full flex-col gap-5 mt-16 md:mt-0">
@@ -156,7 +50,7 @@ export default function RankingPage() {
             {loadingVacancies ? (
               <div className="mt-1 h-8 w-16 animate-pulse rounded bg-zinc-200" />
             ) : (
-              <p className="text-2xl font-semibold text-zinc-900">{ranked.length}</p>
+              <p className="text-2xl font-semibold text-zinc-900">{vacancies.length}</p>
             )}
           </div>
           <div className="rounded-xl border border-zinc-200 bg-white p-3">
@@ -168,7 +62,7 @@ export default function RankingPage() {
             )}
           </div>
           <div className="rounded-xl border border-zinc-200 bg-white p-3">
-            <p className="text-sm text-zinc-500">Strong / weak matches</p>
+            <p className="text-sm text-zinc-500">Strong / Weak matches</p>
             {loadingVacancies ? (
               <div className="mt-1 h-8 w-28 animate-pulse rounded bg-zinc-200" />
             ) : (
@@ -188,13 +82,13 @@ export default function RankingPage() {
         </p>
       )}
 
-      {!loadingVacancies && !vacanciesError && ranked.length === 0 ? (
+      {!loadingVacancies && !vacanciesError && vacancies.length === 0 ? (
         <p className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-base text-zinc-500">
           No vacancies to rank yet. Add a few on the Vacancies page first.
         </p>
       ) : !loadingVacancies && !vacanciesError ? (
         <div className="flex flex-col gap-4">
-          {ranked.map((vacancy, index) => (
+          {vacanciesSorted.map((vacancy, index) => (
             <VacancyRankedCard
               key={vacancy.id}
               vacancy={vacancy}
