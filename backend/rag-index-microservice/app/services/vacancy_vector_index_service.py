@@ -107,6 +107,7 @@ async def add_vacancy_to_index(req: VacancyIndexPayload) -> VacancyIndexResponse
             "company": (req.company or "").strip(),
             "summary": summary,
             **extracted_vacancy_data,
+            "title": req.title,
         }
         metadata = _sanitize_metadata(metadata)
 

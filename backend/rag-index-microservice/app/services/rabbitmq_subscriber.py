@@ -20,33 +20,38 @@ class RabbitMQSubscriber:
         self.channel: aio_pika.abc.AbstractChannel | None = None
 
     async def start(self) -> None:
-        logger.info("RabbitMQ subscriber starting")
-        self.connection = await aio_pika.connect_robust(settings.rabbitmq_url)
-        self.channel = await self.connection.channel()
+        try:    
+            logger.info("RabbitMQ subscriber starting")
+            self.connection = await aio_pika.connect_robust(settings.rabbitmq_url)
+            self.channel = await self.connection.channel()
 
-        exchange = await self.channel.declare_exchange(
-            settings.rabbitmq_exchange,
-            aio_pika.ExchangeType.TOPIC,
-            durable=True,
-        )
+            exchange = await self.channel.declare_exchange(
+                settings.rabbitmq_exchange,
+                aio_pika.ExchangeType.TOPIC,
+                durable=True,
+            )
 
-        cv_queue = await self.channel.declare_queue(settings.rabbitmq_cv_index_queue, durable=True)
-        await cv_queue.bind(exchange, routing_key=settings.rabbitmq_cv_index_routing_key)
-        await cv_queue.consume(self._on_cv_index_message, no_ack=False)
+            cv_queue = await self.channel.declare_queue(settings.rabbitmq_cv_index_queue, durable=True)
+            await cv_queue.bind(exchange, routing_key=settings.rabbitmq_cv_index_routing_key)
+            await cv_queue.consume(self._on_cv_index_message, no_ack=False)
 
-        vacancy_queue = await self.channel.declare_queue(
-            settings.rabbitmq_vacancy_index_queue,
-            durable=True,
-        )
-        await vacancy_queue.bind(exchange, routing_key=settings.rabbitmq_vacancy_index_routing_key)
-        await vacancy_queue.consume(self._on_vacancy_index_message, no_ack=False)
+            vacancy_queue = await self.channel.declare_queue(
+                settings.rabbitmq_vacancy_index_queue,
+                durable=True,
+            )
+            await vacancy_queue.bind(exchange, routing_key=settings.rabbitmq_vacancy_index_routing_key)
+            await vacancy_queue.consume(self._on_vacancy_index_message, no_ack=False)
 
-        logger.info(
-            "RabbitMQ subscriber ready exchange=%s cv_queue=%s vacancy_queue=%s",
-            settings.rabbitmq_exchange,
-            settings.rabbitmq_cv_index_queue,
-            settings.rabbitmq_vacancy_index_queue,
-        )
+
+            logger.info(
+                "RabbitMQ subscriber ready exchange=%s cv_queue=%s vacancy_queue=%s",
+                settings.rabbitmq_exchange,
+                settings.rabbitmq_cv_index_queue,
+                settings.rabbitmq_vacancy_index_queue,
+            )
+        except Exception:  # noqa: BLE001
+            logger.exception("Failed starting RabbitMQ subscriber")
+            raise
 
     async def stop(self) -> None:
         logger.info("RabbitMQ subscriber stopping")
@@ -60,9 +65,9 @@ class RabbitMQSubscriber:
         payload: dict[str, Any] | None = None
         try:
             payload = self._decode_body(message.body)
-            event = CvIndexPayload.model_validate(payload)
-            await cv_vector_index_service.add_to_index(event)
-            logger.info("Processed cv index event user_id=%s", event.user_id)
+            data = CvIndexPayload.model_validate(payload)
+            await cv_vector_index_service.add_to_index(data)
+            logger.info("Processed cv index event user_id=%s", data.user_id)
             await message.ack()
         except Exception:  # noqa: BLE001
             logger.exception("Failed processing cv index event payload=%s", payload)
@@ -72,12 +77,12 @@ class RabbitMQSubscriber:
         payload: dict[str, Any] | None = None
         try:
             payload = self._decode_body(message.body)
-            event = VacancyIndexPayload.model_validate(payload)
-            await vacancy_vector_index_service.add_vacancy_to_index(event)
+            data = VacancyIndexPayload.model_validate(payload)
+            await vacancy_vector_index_service.add_vacancy_to_index(data)
             logger.info(
                 "Processed vacancy index event user_id=%s vacancy_id=%s",
-                event.user_id,
-                event.vacancy_id,
+                data.user_id,
+                data.vacancy_id,
             )
             await message.ack()
         except Exception:  # noqa: BLE001
