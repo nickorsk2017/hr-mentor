@@ -37,7 +37,7 @@ create-supervisor-configs:
 
 	echo "[program:gateway]" | sudo tee $(SUPERVISOR_DIR)/gateway.conf
 	echo "directory=$(REPO_ROOT)/backend/gateway" | sudo tee -a $(SUPERVISOR_DIR)/gateway.conf
-	echo "command=$(REPO_ROOT)/backend/gateway/.venv/bin/python -m gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 1 -b 0.0.0.0:8001" | sudo tee -a $(SUPERVISOR_DIR)/gateway.conf
+	echo "command=$(REPO_ROOT)/backend/gateway/.venv/bin/python -m gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 1 -b 0.0.0.0:8001 --timeout 120 --graceful-timeout 30" | sudo tee -a $(SUPERVISOR_DIR)/gateway.conf
 	echo "autostart=true" | sudo tee -a $(SUPERVISOR_DIR)/gateway.conf
 	echo "autorestart=true" | sudo tee -a $(SUPERVISOR_DIR)/gateway.conf
 	echo "stdout_logfile=/var/log/gateway.out.log" | sudo tee -a $(SUPERVISOR_DIR)/gateway.conf
@@ -46,7 +46,7 @@ create-supervisor-configs:
 
 	echo "[program:cv]" | sudo tee $(SUPERVISOR_DIR)/cv.conf
 	echo "directory=$(REPO_ROOT)/backend/cv-microservice" | sudo tee -a $(SUPERVISOR_DIR)/cv.conf
-	echo "command=$(REPO_ROOT)/backend/cv-microservice/.venv/bin/python -m gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 1 -b 0.0.0.0:8002" | sudo tee -a $(SUPERVISOR_DIR)/cv.conf
+	echo "command=$(REPO_ROOT)/backend/cv-microservice/.venv/bin/python -m gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 1 -b 0.0.0.0:8002 --timeout 120 --graceful-timeout 30" | sudo tee -a $(SUPERVISOR_DIR)/cv.conf
 	echo "autostart=true" | sudo tee -a $(SUPERVISOR_DIR)/cv.conf
 	echo "autorestart=true" | sudo tee -a $(SUPERVISOR_DIR)/cv.conf
 	echo "stdout_logfile=/var/log/cv.out.log" | sudo tee -a $(SUPERVISOR_DIR)/cv.conf
@@ -55,7 +55,7 @@ create-supervisor-configs:
 
 	echo "[program:rag]" | sudo tee $(SUPERVISOR_DIR)/rag.conf
 	echo "directory=$(REPO_ROOT)/backend/rag-index-microservice" | sudo tee -a $(SUPERVISOR_DIR)/rag.conf
-	echo "command=$(REPO_ROOT)/backend/rag-index-microservice/.venv/bin/python -m gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 1 -b 0.0.0.0:8003" | sudo tee -a $(SUPERVISOR_DIR)/rag.conf
+	echo "command=$(REPO_ROOT)/backend/rag-index-microservice/.venv/bin/python -m gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 1 -b 0.0.0.0:8003 --timeout 120 --graceful-timeout 30" | sudo tee -a $(SUPERVISOR_DIR)/rag.conf
 	echo "autostart=true" | sudo tee -a $(SUPERVISOR_DIR)/rag.conf
 	echo "autorestart=true" | sudo tee -a $(SUPERVISOR_DIR)/rag.conf
 	echo "stdout_logfile=/var/log/rag.out.log" | sudo tee -a $(SUPERVISOR_DIR)/rag.conf
@@ -64,7 +64,7 @@ create-supervisor-configs:
 
 	echo "[program:ranking]" | sudo tee $(SUPERVISOR_DIR)/ranking.conf
 	echo "directory=$(REPO_ROOT)/backend/ranking-microservice" | sudo tee -a $(SUPERVISOR_DIR)/ranking.conf
-	echo "command=$(REPO_ROOT)/backend/ranking-microservice/.venv/bin/python -m gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8004" | sudo tee -a $(SUPERVISOR_DIR)/ranking.conf
+	echo "command=$(REPO_ROOT)/backend/ranking-microservice/.venv/bin/python -m gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8004 --timeout 120 --graceful-timeout 30" | sudo tee -a $(SUPERVISOR_DIR)/ranking.conf
 	echo "autostart=true" | sudo tee -a $(SUPERVISOR_DIR)/ranking.conf
 	echo "autorestart=true" | sudo tee -a $(SUPERVISOR_DIR)/ranking.conf
 	echo "stdout_logfile=/var/log/ranking.out.log" | sudo tee -a $(SUPERVISOR_DIR)/ranking.conf
@@ -73,7 +73,7 @@ create-supervisor-configs:
 
 	echo "[program:vacancy]" | sudo tee $(SUPERVISOR_DIR)/vacancy.conf
 	echo "directory=$(REPO_ROOT)/backend/vacancy-microservice" | sudo tee -a $(SUPERVISOR_DIR)/vacancy.conf
-	echo "command=$(REPO_ROOT)/backend/vacancy-microservice/.venv/bin/python -m gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 1 -b 0.0.0.0:8005" | sudo tee -a $(SUPERVISOR_DIR)/vacancy.conf
+	echo "command=$(REPO_ROOT)/backend/vacancy-microservice/.venv/bin/python -m gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 1 -b 0.0.0.0:8005 --timeout 120" | sudo tee -a $(SUPERVISOR_DIR)/vacancy.conf
 	echo "autostart=true" | sudo tee -a $(SUPERVISOR_DIR)/vacancy.conf
 	echo "autorestart=true" | sudo tee -a $(SUPERVISOR_DIR)/vacancy.conf
 	echo "stdout_logfile=/var/log/vacancy.out.log" | sudo tee -a $(SUPERVISOR_DIR)/vacancy.conf
