@@ -30,8 +30,12 @@ class Settings(BaseSettings):
     rabbitmq_exchange: str = "ai-mentor_events"
     rabbitmq_cv_index_routing_key: str = "cv.index"
     rabbitmq_vacancy_index_routing_key: str = "vacancy.index"
+    rabbitmq_cv_index_delete_routing_key: str = "cv.index.delete"
+    rabbitmq_vacancy_index_delete_routing_key: str = "vacancy.index.delete"
     rabbitmq_cv_index_queue: str = "rag.cv.index.queue"
     rabbitmq_vacancy_index_queue: str = "rag.vacancy.index.queue"
+    rabbitmq_cv_index_delete_queue: str = "rag.cv.index.delete.queue"
+    rabbitmq_vacancy_index_delete_queue: str = "rag.vacancy.index.delete.queue"
 
 
 settings = Settings()

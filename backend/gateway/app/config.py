@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     rabbitmq_exchange: str = "ai-mentor_events"
     rabbitmq_cv_index_routing_key: str = "cv.index"
     rabbitmq_vacancy_index_routing_key: str = "vacancy.index"
+    rabbitmq_cv_index_delete_routing_key: str = "cv.index.delete"
+    rabbitmq_vacancy_index_delete_routing_key: str = "vacancy.index.delete"
 
     request_timeout_seconds: float = 30.0
 

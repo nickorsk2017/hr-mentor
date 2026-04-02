@@ -7,7 +7,12 @@ from typing import Any
 import aio_pika
 
 from app.config import settings
-from _common.schemas.vacancy_index import CvIndexPayload, VacancyIndexPayload
+from _common.schemas.vacancy_index import (
+    CvIndexDeletePayload,
+    CvIndexPayload,
+    VacancyIndexDeletePayload,
+    VacancyIndexPayload,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +37,7 @@ async def _emit_message(routing_key: str, payload: dict[str, Any]) -> None:
         logger.exception("Failed publishing message to RabbitMQ routing_key=%s payload=%s", routing_key, payload)
     finally:
         if connection:
-         await connection.close()
+            await connection.close()
 
 
 async def publish_cv_index(payload: CvIndexPayload) -> None:
@@ -48,4 +53,19 @@ async def publish_vacancy_index(payload: VacancyIndexPayload | dict[str, Any]) -
 
     await _emit_message(settings.rabbitmq_vacancy_index_routing_key, data)
 
+
+async def publish_cv_index_delete(payload: CvIndexDeletePayload | str) -> None:
+    if isinstance(payload, CvIndexDeletePayload):
+        data = payload.model_dump(mode="json")
+    else:
+        data = CvIndexDeletePayload(user_id=payload).model_dump(mode="json")
+    await _emit_message(settings.rabbitmq_cv_index_delete_routing_key, data)
+
+
+async def publish_vacancy_index_delete(payload: VacancyIndexDeletePayload | str) -> None:
+    if isinstance(payload, VacancyIndexDeletePayload):
+        data = payload.model_dump(mode="json")
+    else:
+        data = VacancyIndexDeletePayload(vacancy_id=payload).model_dump(mode="json")
+    await _emit_message(settings.rabbitmq_vacancy_index_delete_routing_key, data)
 

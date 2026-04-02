@@ -15,7 +15,12 @@ from _common.schemas.vacancy_index import (
 )
 
 from app.services.proxy_service import forward_json
-from app.services.rabbitmq_publisher import publish_cv_index, publish_vacancy_index
+from app.services.rabbitmq_publisher import (
+    publish_cv_index,
+    publish_cv_index_delete,
+    publish_vacancy_index,
+    publish_vacancy_index_delete,
+)
 
 router = APIRouter()
 
@@ -87,12 +92,14 @@ async def get_vacancies(user_id: UUID = Query(...)) -> Any:
 
 @router.delete("/vacancies/{vacancy_id}")
 async def delete_vacancy(vacancy_id: UUID, user_id: UUID = Query(...)) -> Any:
-    return await forward_json(
+    response = await forward_json(
         method="DELETE",
         base_url=settings.vacancy_microservice_url,
         path=f"/vacancies/{vacancy_id}",
         params={"user_id": str(user_id)},
     )
+    await publish_vacancy_index_delete(str(vacancy_id))
+    return response
 
 
 @router.get("/rankings/health")
@@ -146,19 +153,12 @@ async def index_cv(payload: CvIndexPayload) -> Any:
 @router.delete("/cv/index")
 async def delete_cv_index(
     user_id: str = Query(..., description="Client user id"),
-) -> Any:
-    return await forward_json(
-        method="DELETE",
-        base_url=settings.rag_index_microservice_url,
-        path="/cv/index",
-        params={"user_id": user_id},
-    )
+) -> dict[str, str]:
+    await publish_cv_index_delete(user_id)
+    return {"status": "accepted", "user_id": user_id}
 
 
 @router.delete("/vacancies/index/{vacancy_id}")
-async def delete_vacancy_index(vacancy_id: str) -> Any:
-    return await forward_json(
-        method="DELETE",
-        base_url=settings.rag_index_microservice_url,
-        path=f"/vacancies/index/{vacancy_id}",
-    )
+async def delete_vacancy_index(vacancy_id: str) -> dict[str, str]:
+    await publish_vacancy_index_delete(vacancy_id)
+    return {"status": "accepted", "vacancy_id": vacancy_id}

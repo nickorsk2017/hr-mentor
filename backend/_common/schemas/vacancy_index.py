@@ -72,3 +72,15 @@ class DeleteVacancyIndexResponse(BaseModel):
     vacancy_id: str
     deleted: bool = True
     namespace: str
+
+
+class CvIndexDeletePayload(BaseModel):
+    """Remove CV vectors from the index for this user."""
+
+    user_id: str = Field(..., min_length=1, description="User id")
+
+
+class VacancyIndexDeletePayload(BaseModel):
+    """Remove vacancy vectors from the index."""
+
+    vacancy_id: str = Field(..., min_length=1, description="Vacancy id")
