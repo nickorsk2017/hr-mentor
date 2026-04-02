@@ -243,15 +243,22 @@ async def get_vacancies_by_user_id(user_id: UUID) -> VacanciesByUserResponse:
         return VacanciesByUserResponse(vacancies=[])
         
     pinecone_rows = await get_index_vacancies_from_pinecone(user_id, cv_text=cv_text)
+    print('--------------------------------')
+    print("PINECONE ROWS: ", pinecone_rows)
+    print('--------------------------------')
     vacancies_from_index = [row.vacancy for row in pinecone_rows]
+    print('--------------------------------')
+    print("VACANCIES FROM INDEX: ", vacancies_from_index)
+    print('--------------------------------')
 
     if not vacancies_from_index:
         return VacanciesByUserResponse(vacancies=[])
 
     try:
         rows_out = await rank_vacancies_by_cv(cv_text, cv_skills, vacancies_from_index)
-    except RuntimeError:
-        raise
+        print('--------------------------------')
+        print("ROWS OUT: ", rows_out)
+        print('--------------------------------')
     except Exception as e:
         raise RuntimeError(f"Ranking failed: {e}") from e
 
@@ -279,5 +286,8 @@ async def get_vacancies_by_user_id(user_id: UUID) -> VacanciesByUserResponse:
                 meta_data=vacancy.meta_data,
             )
         )
+    print('--------------------------------')
+    print("VACANCIES: ", vacancies)
+    print('--------------------------------')
 
     return VacanciesByUserResponse(vacancies=vacancies)
