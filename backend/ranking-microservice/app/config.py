@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     port: int = 8004
 
     # Optional: same pattern as cv-microservice (verify DB on startup when set)
-    database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/ai_hr"
+    database_url: str;
 
     # OpenAI — used for embeddings (LangChain OpenAIEmbeddings)
     openai_api_key: str = ""

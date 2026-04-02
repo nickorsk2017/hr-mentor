@@ -14,6 +14,9 @@ def health() -> dict:
 
 @router.put("/cvs", response_model=CVResponse)
 async def upsert_cv_endpoint(req: UpsertCVRequest) -> CVResponse:
+    print("----------------TEST UPSERT CV----------------")
+    print(req.model_dump_json())
+    print("----------------TEST UPSERT CV----------------")
     return await upsert_cv(req)
 
 

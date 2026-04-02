@@ -1,0 +1,136 @@
+volumes:
+  postgres_data:
+
+services:
+  gateway:
+    build:
+      context: ./backend
+      dockerfile: gateway/Dockerfile
+    container_name: ai-gateway
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      cv:
+        condition: service_started
+      rag:
+        condition: service_started
+      ranking:
+        condition: service_started
+      vacancy:
+        condition: service_started
+      migrations:
+        condition: service_completed_successfully
+    env_file:
+      - ./backend/_common/.env
+    environment:
+      CV_MICROSERVICE_URL: http://cv:8002
+      RAG_INDEX_MICROSERVICE_URL: http://rag:8003
+      RANKING_MICROSERVICE_URL: http://ranking:8004
+      VACANCY_MICROSERVICE_URL: http://vacancy:8005
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+    ports:
+      - "8001:8001"
+
+  cv:
+    build:
+      context: ./backend
+      dockerfile: cv-microservice/Dockerfile
+    container_name: cv-microservice
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./backend/_common/.env
+    ports:
+      - "8002:8002"
+
+  rag:
+    build:
+      context: ./backend
+      dockerfile: rag-index-microservice/Dockerfile
+    container_name: rag-index-microservice
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./backend/_common/.env
+    ports:
+      - "8003:8003"
+
+  ranking:
+    build:
+      context: ./backend
+      dockerfile: ranking-microservice/Dockerfile
+    container_name: ranking-microservice
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./backend/_common/.env
+    ports:
+      - "8004:8004"
+
+  vacancy:
+    build:
+      context: ./backend
+      dockerfile: vacancy-microservice/Dockerfile
+    container_name: vacancy-microservice
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./backend/_common/.env
+    ports:
+      - "8005:8005"
+
+  frontend:
+    build:
+      context: ./frontend/main-app
+      dockerfile: Dockerfile
+    container_name: ai-mentor-frontend
+    depends_on:
+      - gateway
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8001
+    ports:
+      - "3000:3000"
+
+  postgres:
+    image: postgres:16
+    container_name: ai-postgres
+    env_file:
+      - ./backend/_common/.env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5  
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ai-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5  
+
+  migrations:
+    build:
+      context: ./backend
+      dockerfile: _common/db/Dockerfile
+    container_name: ai-migrations
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./backend/_common/.env

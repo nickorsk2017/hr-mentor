@@ -14,11 +14,9 @@ _BACKEND_ROOT = Path(__file__).resolve().parents[3]
 if str(_BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(_BACKEND_ROOT))
 
-from _common.env_paths import COMMON_ENV_FILE  # noqa: E402
+from _common.env_paths import COMMON_ENV_FILE
 
-from _common.db.models.base import BaseModel  # noqa: E402
-from _common.db.models import cv as _cv  # noqa: F401, E402
-from _common.db.models import vacancy as _vacancy  # noqa: F401, E402
+from _common.db.models.base import BaseModel
 
 
 class _Settings(BaseSettings):
@@ -27,7 +25,7 @@ class _Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
-    database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/ai_hr"
+    database_url: str;
 
 
 config = context.config

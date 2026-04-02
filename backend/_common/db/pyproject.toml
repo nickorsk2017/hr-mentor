@@ -13,7 +13,7 @@ dependencies = [
   "sqlalchemy==2.0.36",
   "alembic>=1.14",
   "pydantic-settings==2.6.1",
-  "psycopg2>=2.9.11",
+  "psycopg2-binary"
 ]
 
 [tool.setuptools]

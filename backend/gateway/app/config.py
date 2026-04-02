@@ -24,7 +24,7 @@ class Settings(BaseSettings):
 
     # RabbitMQ (for async indexing/broadcast)
     rabbitmq_url: str = "amqp://guest:guest@localhost:5672/"
-    rabbitmq_exchange: str = "ai_hr_events"
+    rabbitmq_exchange: str = "ai-mentor_events"
     rabbitmq_cv_index_routing_key: str = "cv.index"
     rabbitmq_vacancy_index_routing_key: str = "vacancy.index"
 

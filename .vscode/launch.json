@@ -35,7 +35,19 @@
       "name": "Frontend (Next.js dev)",
       "type": "node-terminal",
       "request": "launch",
-      "command": "cd frontend/main-app && pnpm dev"
+      "command": "cd frontend/main-app && pnpm install && pnpm dev"
+    },
+    {
+      "name": "Migrations",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "cd backend/_common/db && uv run alembic upgrade head"
+    },
+    {
+      "name": "Docker",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "docker-compose down -v &&docker-compose up --build"
     }
   ],
   "compounds": [

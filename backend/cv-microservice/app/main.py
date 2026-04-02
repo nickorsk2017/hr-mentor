@@ -18,11 +18,11 @@ async def init_db() -> None:
         if "InvalidCatalogNameError" in msg or "does not exist" in msg:
             raise RuntimeError(
                 "PostgreSQL database does not exist. "
-                "Create it (e.g. `createdb ai_hr`) or update DATABASE_URL."
+                "Create it (e.g. `createdb ai-mentor`) or update DATABASE_URL."
             ) from e
         raise
 
-
+ 
 def create_app() -> FastAPI:
     app = FastAPI(title=settings.app_name)
     app.include_router(api_router)
