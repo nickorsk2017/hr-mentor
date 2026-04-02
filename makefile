@@ -142,13 +142,18 @@ FRONTEND_NAME=ai-mentor-frontend
 install-frontend:
 	curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 	sudo apt-get install -y nodejs
-	cd $(FRONTEND_DIR) && npm install
-	cd $(FRONTEND_DIR) && npm run build
-	sudo npm install -g pm2
+	cd $(FRONTEND_DIR) && pnpm install
+	cd $(FRONTEND_DIR) && pnpm run build
+	sudo pnpm install -g pm2
 	pm2 startup
 
+update-frontend:
+	cd $(FRONTEND_DIR) && pnpm install
+	cd $(FRONTEND_DIR) && pnpm run build
+	pm2 restart $(FRONTEND_NAME)
+
 start-frontend:
-	cd $(FRONTEND_DIR) && pm2 start npm --name "$(FRONTEND_NAME)" -- start
+	cd $(FRONTEND_DIR) && pm2 start pnpm --name "$(FRONTEND_NAME)" -- start
 	pm2 save
 
 stop-frontend:
