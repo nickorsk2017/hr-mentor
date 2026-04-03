@@ -133,6 +133,7 @@ Extraction rules:
   - large language model -> llm
   - cursor ai -> cursor
   - AI-powered coding tools (or same meaning) -> ai tools
+- Last skill might be placed before new line of text  
 - Post-processing:
   - Normalize skill casing to canonical names
   - Remove duplicated strings from the skills field
