@@ -94,6 +94,7 @@ Extraction rules:
 - sentense should be short and concise
 
 2. skills field (REQUIRED)
+- DO NOT SKIP TRAILING ITEMS BEFORE NEW LINE OR END OF THE TEXT
 - INCLUDE ALL SKILLS TO THE SKILLS FIELD, CHECK ALL FOLLOWING CATEGORIES:
   - databases (e.g. postgresql, mongodb, etc.)
   - platforms (e.g. AWS, Azure, GCP, Node etc.)

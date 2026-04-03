@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
+import re
 
 from app.config import settings
 from app.prompts.index_to_vector_db import (
@@ -28,6 +29,7 @@ async def extract_cv_data_for_index(cv_html: str) -> CvExtractionRecord:
     Use OpenAI GPT-4o-mini to derive summary, skills, and years_expereance from raw CV text.
     """
     plain_cv = strip_html_to_text(cv_html).lower()
+    plain_cv = re.sub(r'/>(?!\.)', '/>.', plain_cv)
 
 
     llm = _get_llm_client()

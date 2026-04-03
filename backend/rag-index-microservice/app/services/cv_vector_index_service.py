@@ -13,7 +13,6 @@ from _common.schemas.vacancy_index import (
     DeleteCvIndexResponse,
 )
 from app.services.cv_data_extraction_service import extract_cv_data_for_index
-from app.utils import strip_html_to_text
 
 pc = Pinecone(api_key=settings.pinecone_api_key)
 index = pc.Index(settings.pinecone_index)
