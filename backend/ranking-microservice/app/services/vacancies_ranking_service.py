@@ -9,7 +9,7 @@ from uuid import UUID
 from typing import Any
 from fastapi import HTTPException
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 
 from app.schemas.postgres_vacancy import (
     Vacancy as VacancyResponse,
@@ -103,15 +103,15 @@ def _vacancy_block(v: VacancyFromIndex, cv_skills: list[str]) -> str:
 
 
 def _get_ranking_data_llm(cv_text: str, cv_skills: list[str], vacancies_from_index: list[VacancyFromIndex]) -> RankingResponse:
-    if not settings.groq_api_key:
-        raise RuntimeError("GROQ_API_KEY is not set")
+    if not settings.openai_api_key:
+        raise RuntimeError("OPENAI_API_KEY is not set")
 
     try:
-        llm = ChatGroq(
-            model=settings.groq_chat_model,
-            api_key=settings.groq_api_key,
+        llm = ChatOpenAI(
+            model=settings.openai_chat_model,
+            api_key=settings.openai_api_key,
             temperature=0,
-             model_kwargs={
+            model_kwargs={
                 "response_format": {"type": "json_object"},
             }
         )

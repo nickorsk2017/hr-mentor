@@ -81,35 +81,20 @@ EXTRACT_CV_FOR_INDEX_FIELDS = """
 
 Extraction rules:
 
-1. summary field (REQUIRED)
-- 4-6 sentences
-- Written in third person or neutral tone (no "I")
-- Must include:
-  - Key roles and seniority_score (e.g. Senior Backend Engineer, CTO)
-  - Core tech stack
-  - Main achievements or impact (metrics if available)
-- Avoid generic phrases like "hardworking" or "team player"
-- Be concise and factual
-- Avoid filler words, marketing language, and repetition
-- sentense should be short and concise
-
-2. skills field (REQUIRED)
+1. skills field (REQUIRED)
 - DO NOT SKIP TRAILING ITEMS BEFORE NEW LINE OR END OF THE TEXT
-- INCLUDE ALL SKILLS TO THE SKILLS FIELD, CHECK ALL FOLLOWING CATEGORIES:
-  - databases (e.g. postgresql, mongodb, etc.)
+- INCLUDE ALL SKILLS TO THE SKILLS FIELD:
+  - technologies (e.g. React, Angular, Vue, Node, PostgreSQL, MongoDB, etc.)
   - platforms (e.g. AWS, Azure, GCP, Node etc.)
-  - programming languages (e.g. python, javascript, typescript, etc.)
-  - tools for job (e.g. jira, notion, slack, etc.)
-  - frameworks (e.g. react, angular, vue, etc.)
-  - libraries (e.g. Lodash, Moment, React Query, Zustand, etc.)
-  - best practices (e.g. solid principles, design patterns, etc.)
-  - approaches (e.g. mvp, product market fit, etc.)
-  - methodologies (e.g. AGILE, waterfall, scrum, kanban, etc.) // don't forget about this category!
-  - processes (e.g. ci/cd, etc.)
-  - extract backend runtimes (e.g. node.js)
-  - extract protocols or similar meaning (e.g. http, https, tcp, udp, soap, etc.)
-  - APIs (e.g. rest, graphql, soap, etc.) // don't forget about this category!
-  - security protocols and tools (e.g. https, tls, ssl, cloudflare, etc.)
+  - programming languages (e.g. Python, JavaScript, TypeScript, etc.)
+  - tools for job (e.g. Jira, Notion, Slack, etc.)
+  - frameworks (e.g. React, Angular, Vue, etc.)
+  - libraries (e.g. Lodash, Moment, etc.)
+  - techniques (e.g. SOLID principles, Design Patterns, etc.)
+  - approaches (e.g. Agile, Scrum, MVP, Product Market Fit etc.)
+  - methodologies (e.g. Waterfall, Agile, etc.)
+  - processes (e.g. CI/CD, etc.)
+  - extract backend runtimes
 - Extract skills from:
   - Tech Stack sections
   - Bullet lists
@@ -119,7 +104,6 @@ Extraction rules:
 - Add "AI" skill to the skills field if look any AI techniques or LLM concepts"
 - Add "LLM" skill  to the skills field if look any LLM concepts or large language models
 - Add "AI tools" skill to the skills field if look any AI tools or AI-powered coding tools
-- ADD KEYWORDS TO THE SKILLS FIELD:
 - Convert skills to the analogical following format:
   - socket.io -> websocket
   - websockets -> websocket
@@ -134,10 +118,21 @@ Extraction rules:
   - large language model -> llm
   - cursor ai -> cursor
   - AI-powered coding tools (or same meaning) -> ai tools
-- Last skill might be placed before new line of text  
 - Post-processing:
   - Normalize skill casing to canonical names
-  - Remove duplicated strings from the skills field
+  - Merge duplicated strings in the skills field to one item (e.g. [Node.js, Node.js] -> [Node.js])
+
+2. summary field (REQUIRED)
+- 4-6 sentences
+- Written in third person or neutral tone (no "I")
+- Must include:
+  - Key roles and seniority_score (e.g. Senior Backend Engineer, CTO)
+  - Core tech stack
+  - Main achievements or impact (metrics if available)
+- Avoid generic phrases like "hardworking" or "team player"
+- Be concise and factual
+- Avoid filler words, marketing language, and repetition
+- sentense should be short and concise
 
 3. years_experience field (REQUIRED)
 - Total professional experience in years (float, e.g. 5.5)

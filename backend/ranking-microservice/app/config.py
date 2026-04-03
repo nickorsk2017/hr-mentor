@@ -22,6 +22,7 @@ class Settings(BaseSettings):
 
     # OpenAI — used for embeddings (LangChain OpenAIEmbeddings)
     openai_api_key: str = ""
+    openai_chat_model: str = "gpt-4o-mini"
     openai_embedding_model: str = "text-embedding-3-small"
     # Optional down-projection for text-embedding-3* models (e.g. 1024 for a 1024-d index)
     openai_embedding_dimensions: int = 1536

@@ -23,15 +23,17 @@ def _get_llm_client() -> ChatOpenAI:
         api_key=settings.openai_api_key,
         temperature=0,
     )
+def _build_prompt(
+    cv_html: str
+) -> str:
+    plain_cv = strip_html_to_text(cv_html)
+    return f"""CV OF CANDIDATE:\n
+        {plain_cv}"""
 
 async def extract_cv_data_for_index(cv_html: str) -> CvExtractionRecord:
     """
     Use OpenAI GPT-4o-mini to derive summary, skills, and years_expereance from raw CV text.
     """
-    plain_cv = strip_html_to_text(cv_html).lower()
-    plain_cv = re.sub(r'/>(?!\.)', '/>.', plain_cv)
-
-
     llm = _get_llm_client()
     structured = llm.with_structured_output(CvExtractionRecord)
 
@@ -42,6 +44,6 @@ async def extract_cv_data_for_index(cv_html: str) -> CvExtractionRecord:
                     FIELDS=EXTRACT_CV_FOR_INDEX_FIELDS,
                 ),
             ),
-            HumanMessage(content=plain_cv),
+            HumanMessage(content=_build_prompt(cv_html)),
         ]
     )
