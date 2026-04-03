@@ -110,9 +110,6 @@ async def add_to_index(payload: CvIndexPayload) -> CvIndexResponse:
         [{"id": vid, "values": embedding, "metadata": metadata}],
     )
 
-    print("CV vector indexed successfully", vid)
-    print("Metadata:", metadata)
-
     return CvIndexResponse(
         id=uid,
         user_id=uid,
